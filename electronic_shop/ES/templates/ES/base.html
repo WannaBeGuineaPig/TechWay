@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'ES/styles/base_style.css' %}">
+    {% block head %}{% endblock head %}
+</head>
+<body>
+
+    <!-- Шапка сайта -->
+    
+    <header class="main_header">
+        <div class="info_site container">
+            <div class="main_page_box">
+                <a href="{% url 'TechWay:home' %}" class="main_page">
+                    <div class="text_main_page">
+                        <div class="logo">
+                            <div class="first_view_square">
+                                <div class="first_view_line"></div>
+                                <div class="first_view_line"></div>
+                                <div class="first_view_line"></div>
+                            </div>
+                            <div class="second_view_square">
+                                <div class="second_view_line"></div>
+                                <div class="second_view_line"></div>
+                                <div class="second_view_line"></div>
+                            </div>
+                            <div class="second_view_square">
+                                <div class="second_view_line"></div>
+                                <div class="second_view_line"></div>
+                                <div class="second_view_line"></div>
+                            </div>
+                            <div class="first_view_square">
+                                <div class="first_view_line"></div>
+                                <div class="first_view_line"></div>
+                                <div class="first_view_line"></div>
+                            </div>
+                        </div>
+                        <div class="text_logo text_align_center">TechWay</div>
+                    </div>
+                </a>
+            </div>
+            <div class="catalog_box">
+                <a href="{% url 'TechWay:catalog' %}" class="catalog_link_box">
+                    <p>Каталог</p>
+                    <img src="{% static 'ES/images/list.png' %}" alt="" id="img_arrow">
+                </a>
+            </div>
+            <div class="search_items_box">
+                <label for="search_items">
+                    <input type="search" name="" id="search_items" placeholder="Поиск по сайту">
+                </label>
+                <a href="#"><img src="{% static 'ES/images/search-interface-symbol.png' %}" alt=""></a>
+            </div>
+            <div class="favourite">
+                <a href="{% url 'TechWay:favorite' %}" class="link_box">
+                    <img src="{% static 'ES/images/heart.png' %}" alt="">
+                    <p>Избранное</p>
+                </a>
+            </div>
+            <div class="basket_box">
+                <a href="{% url 'TechWay:backet' %}" class="link_box">
+                    <img src="{% static 'ES/images/shopping-basket.png' %}" alt="">
+                    <p>Корзина</p>
+                </a>
+            </div>
+            <div class="login_box">
+                <a href="{% url 'TechWay:personal_account' %}" class="link_box">    
+                    <img src="{% static 'ES/images/user-interface.png' %}" alt="">
+                    <p>Войти</p>
+                </a>
+            </div>
+        </div>
+    </header>
+    
+    <!--  -->
+    
+    <!-- Навигация для мобильных устройств -->
+    
+    <div class="box_nav_mobile">
+        <nav class="nav_mobile">
+            <ul class="items_nav">
+                <li>
+                    <a href="#"><img src="{% static 'ES/images/home_icon.png' %}" alt=""><div>Главная</div></a>
+                </li>
+                <li>
+                    <a href="#"><img src="{% static 'ES/images/list.png' %}" alt=""><div>Каталог</div></a>
+                </li>
+                <li>
+                    <a href="#"><img src="{% static 'ES/images/heart.png' %}" alt=""><div>Избранное</div></a>
+                </li>
+                <li>
+                    <a href="#"><img src="{% static 'ES/images/shopping-basket.png' %}" alt=""><div>Корзина</div></a>
+                </li>
+                <li>
+                    <a href="#"><img src="{% static 'ES/images/user-interface.png' %}" alt=""><div>Войти</div></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+    <!--  -->
+
+    <!-- Дополнение к базовой странице -->
+    
+    {% block body %}{% endblock body %}
+    
+    <!--  -->
+
+    <!-- Подвал сайта -->
+
+    <footer class="main_footer">
+        <div class="container footer_box">
+            <a href="{% url 'TechWay:home' %}" class="main_page">
+                <div class="text_main_page">
+                    <div class="logo">
+                        <div class="first_view_square">
+                            <div class="first_view_line"></div>
+                            <div class="first_view_line"></div>
+                            <div class="first_view_line"></div>
+                        </div>
+                        <div class="second_view_square">
+                            <div class="second_view_line"></div>
+                            <div class="second_view_line"></div>
+                            <div class="second_view_line"></div>
+                        </div>
+                        <div class="second_view_square">
+                            <div class="second_view_line"></div>
+                            <div class="second_view_line"></div>
+                            <div class="second_view_line"></div>
+                        </div>
+                        <div class="first_view_square">
+                            <div class="first_view_line"></div>
+                            <div class="first_view_line"></div>
+                            <div class="first_view_line"></div>
+                        </div>
+                    </div>
+                    <div class="text_logo text_align_center">TechWay</div>
+                </div>
+            </a>
+            <nav class="nav_footer">
+                <ul class="nav_table">
+                    <li><a href="{% url 'TechWay:home' %}">Главная</a></li>
+                    <li><a href="{% url 'TechWay:catalog' %}">Каталог</a></li>
+                    <li><a href="{% url 'TechWay:favorite' %}">Избранное</a></li>
+                    <li><a href="{% url 'TechWay:backet' %}">Корзина</a></li>
+                    <li><a href="{% url 'TechWay:personal_account' %}">Войти</a></li>
+                </ul>
+            </nav>
+            <div class="contact_information">
+                <h4>Контактная информация</h4>
+                <p>Горячая линия: <a href="tel:89631408360" class="contact_information_link">7(963)140-83-60</a>
+                <br>Электронная почта: <a href="mailto:LoginProject@yandex.ru" class="contact_information_link">LoginProject@yandex.ru</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!--  -->
+
+</body>
+</html>
