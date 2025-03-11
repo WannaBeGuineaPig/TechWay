@@ -1,0 +1,89 @@
+{% extends 'TechWay/base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block head %}
+        <title>TechWay - домашняя страница</title>
+        <link rel="stylesheet" href="{% static 'techway/styles/main_window_style.css' %}">
+        <script src="{% static 'techway/scripts/main_window_script.js' %}"></script>
+    {% endblock head %}
+</head>
+<body>
+    {% block body %}
+        <div class="container box_all_div">
+            <div class="box_margin">
+                <h2 class="number_of_items_found">Найдено:169 товаров в 23 категориях</h2>
+            </div>
+            <div class="box_sort_link box_margin">
+                <p>Сортировка: <a class="sort_link" href="#" onclick="click_sort_link()" id="sort_link">сначала популярные</a></p>
+            </div>
+
+            <div class="box_margin">
+                <p class="number_of_items_found">Бытовая техника > Встраиваемая техника > Варочные панели</p>
+                <!-- карточка товара -->
+                    <div class="card_item box_margin">
+                        <div class="image_box">
+                            <img src="{% static 'techway/images/1.png' %}" alt="фото товара">
+                        </div>
+                        <div class="info_box">
+                            <div class="box_data">
+                                <a class="name_item" href="#">Беспроводные/проводные наушники GAL BH-4008 черный</a>
+                                <div class="feedback_item">
+                                    <div>
+                                        <p><img class="image_star" src="{% static 'techway/images/star.png' %}" alt=""> 4 | 11 отзыва(-ов)</p>
+                                    </div>
+                                    <div>
+                                        <p>В наличие 1000 шт</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="buy_favorite_price">
+                            <p class="price_item">799 &#8381</p>
+                            <div class="buy_favorite">
+                                <div class="box_center">
+                                    <a class="favorite" href="#" title="добавить в избранное">
+                                        <img class="image_heart" src="{% static 'techway/images/heart.png' %}" alt="">
+                                    </a>
+                                    <a class="link_buy" href="#" title="добавить в избранное"><span>Купить</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <!--  -->
+            </div>
+
+            <div class="box_margin">
+                <p>girneklg</p>
+            </div>
+            
+            <section class="types_sort" id="box_types_sort">
+                <div>
+                    <input type="radio" id="popular_first" name="sort" value="popular_first" checked ></input>
+                    <label for="popular_first">Сначала популярные</label>
+                </div>
+                <div>
+                    <input type="radio" id="low_cost_first" name="sort" value="low_cost_first" />
+                    <label for="low_cost_first">Сначала недорогие</label>
+                </div>
+                <div>
+                    <input type="radio" id="expensive_first" name="sort" value="expensive_first" />
+                    <label for="expensive_first">Сначала дорогие</label>
+                </div>
+                <div>
+                    <input type="radio" id="number_of_feedback" name="sort" value="number_of_feedback" />
+                    <label for="number_of_feedback">По количеству отзывов</label>
+                </div>
+                <div>
+                    <input type="radio" id="best_feedback" name="sort" value="best_feedback" />
+                    <label for="best_feedback">Сначала с лучшей оценкой</label>
+                </div>
+            </section>
+        </div>
+    {% endblock body %}
+</body>
+</html>
