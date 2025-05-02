@@ -1,0 +1,44 @@
+{% extends 'TechWay/base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block head %}
+        <title>TechWay - авторизация</title>
+        <link rel="stylesheet" href="{% static 'techway/styles/authorization_style.css' %}">
+    {% endblock head %}
+</head>
+<body>
+    {% block body %}
+    <div class="container main_box center_elements">
+        <div class="main_box_auth">
+            <h1 class="text_align_center title_text">Авторизация</h1>
+            <form action="" method="post" class="box_auth">
+                {% csrf_token %}
+                <div class="box_input_data">
+                    <div class="box_input_data_final">
+                        <label for="login_input" id="label_mail" class="label_for_input" style="display: none;">Введите почту</label>
+                        <input class="input_data" type="text" name="input_mail" id="login_input" oninput="checkPlaceHolder('label_mail', 'login_input')" required pattern="^[A-Za-z0-9]{3,}[@][A-Za-z]{3,}[.][A-Za-z]+$">
+                    </div>
+                </div>
+                <div class="box_input_data">
+                    <div class="box_input_data_final">
+                        <label for="password_input" id="label_password" class="label_for_input" style="display: none;">Введите пароль</label>
+                        <input class="input_data" type="text" name="input_password" id="password_input" oninput="checkPlaceHolder('label_password', 'password_input')" required pattern="^[A-Za-z\d]{5,}$">
+                        <div class="box_link_to_reg">
+                            <p>Нет аккаунта? <a class="link_to_reg" href="{% url 'TechWay:reg' %}">Создать</a></p>
+                            <a class="link_to_reg" href="#">Восстановить пароль</a>
+                        </div>
+                    </div>
+                </div>
+                <input type="submit" value="Войти" class="sign_in_btn">
+            </form>
+        </div>
+    </div>
+    <script src="{% static 'techway/scripts/auth_script.js' %}"></script>
+    {% endblock body %}
+</body>
+</html>

@@ -1,0 +1,50 @@
+{% extends 'TechWay/base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block head %}
+        <title>TechWay - каталог</title>
+        <link rel="stylesheet" href="{% static 'techway/styles/catalog_style.css' %}">
+    {% endblock head %}
+</head>
+<body>
+    {% block body %}
+        <div class="container main_box_category">
+            <div class="сatalog_item">
+                <p>Каталог > Мобильные устройства > Смартфоны и гаджеты > Смартфоны</p>
+            </div>
+            
+            <h1 class="name_current_category">Каталог товаров</h1>
+            
+            <div class="box_all_card_category">
+                <!-- Карточка категории -->
+                <!-- !!!!! -->
+                <!-- Добавить переадресацию на другую категорию(js, Django) -->
+                <div class="card_category" onclick="redirectionToAdditionalСategories()">
+                    <div class="box_image_category">
+                        <img src="{% static 'techway/images/1.png' %}" alt="">
+                    </div>
+                    <div class="box_text_category">
+                        <p>Мобильные устройства</p>
+                    </div>
+                </div>
+                <!-- -->
+            </div>
+        </div>
+        <script src="{% static 'techway/scripts/catalog_script.js' %}"></script>
+    {% endblock body %}
+</body>
+</html>
+
+<!-- {% if sections %}
+            {% for section in sections %}
+                <h1>{{ section.name }}</h1>
+            {% endfor %}
+
+        {% else %}
+            <p>No polls are available.</p>
+        {% endif %} -->

@@ -1,0 +1,80 @@
+{% extends 'TechWay/base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block head %}
+        <title>TechWay - избранное</title>
+        <link rel="stylesheet" href="{% static 'techway/styles/favorite_style.css' %}">
+    {% endblock head %}
+</head>
+<body>
+    {% block body %}
+    
+    <div class="container main_box">
+        <div class="main_box_favorite box_margin">
+            <div class="box_title">
+                <h1 class="title_text">Избранное</h1>
+            </div>
+            <div class="box_about_favorite box_margin">
+                <div class="box_info_instruments">
+                    <h3>2 товара на сумму: 39 898 &#8381;</h3>
+                    <div class="box_instruments">
+                        <div class="box_selected_all" id="selected_all_items">
+                            <input type="checkbox" name="" id="selected_all_items_checkbox">
+                            <p>Выбрать все</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="box_buy_items_btn">
+                    <input type="submit" value="Купить" class="buy_items_btn">
+                </div>
+            </div>
+            <div class="all_cards_favorite">
+            <!-- Карточка товара -->
+                <div class="card_item box_margin">
+                    <div class="box_add_to_buket center_elements">
+                        <input type="checkbox" class="item_checkbox" name="" id="selected_item_1">
+                    </div>
+                    <div class="image_box">
+                        <img src="{% static 'techway/images/1.png' %}" alt="фото товара">
+                    </div>
+                    <div class="info_box">
+                        <div class="box_data">
+                            <div>
+                                <a class="name_item" href="#">Беспроводные/проводные наушники GAL BH-4008 черный</a>
+                            </div>
+                            <div class="feedback_item">
+                                <div>
+                                    <p class="feedback_text"><img class="image_star" src="{% static 'techway/images/star.png' %}" alt=""> 4 | 11 отзыва(-ов)</p>
+                                </div>
+                                <div class="count_text">
+                                    <p>В наличие 1000 шт</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="buy_favorite_price">
+                        <p class="price_item">799 &#8381</p>
+                        <div class="buy_favorite">
+                            <div class="box_center">
+                                <a class="favorite" href="#" title="добавить в избранное">
+                                    <img class="image_heart" src="{% static 'techway/images/heart.png' %}" alt="">
+                                </a>
+                                <button class="link_buy" title="добавить в корзину"><span>Купить</span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!--  -->
+            </div>
+        </div>
+    </div>
+    
+    <script src="{% static 'techway/scripts/favorite_script.js' %}"></script>
+    {% endblock body %}
+</body>
+</html>

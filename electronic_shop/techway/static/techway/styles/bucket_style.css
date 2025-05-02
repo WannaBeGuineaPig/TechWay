@@ -1,0 +1,362 @@
+.main_box_favorite{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.box_title{
+    display: flex;
+    justify-content: center;
+}
+
+.box_title h1{
+    width: 100%;
+}
+
+.box_about_favorite{
+    background-color: white;
+    display: flex;
+    height: 100px;
+    border-radius: 10px;
+}
+
+.box_about_favorite > *{
+    width: 50%;
+}
+
+.box_info_instruments{
+    height: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    width: 80%;
+}
+
+.box_info_instruments > *{
+    margin-left: 3vh;
+}
+
+.box_selected_all{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 1vh;
+    width: 150px;
+    height: 40px;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+}
+
+.box_selected_all:hover{
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.box_selected_all:active{
+    opacity: 0.5;
+}
+
+.box_selected_all input, .box_selected_all p{
+    user-select: none;
+}
+
+.box_buy_items_btn{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    width: 30%;
+}
+
+.buy_items_btn{
+    height: 4vh;
+    width: 10vw;
+    min-width: 120px;
+    font-size: 14px;
+    border-radius: 5px; 
+    background-color: transparent;
+    margin-right: 3vh;
+}
+
+.buy_items_btn:hover{
+    opacity: 0.7;
+    background-color: var(--first_main_color);
+    border: 3px solid black;
+    transition: border 0s;
+}
+
+.buy_items_btn:active{
+    opacity: 0.5;
+}
+
+.all_cards_favorite{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card_item{
+    width: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    max-height: 300px;
+    border-radius: 15px;
+}
+
+.box_add_to_buket{
+    width: 50px;
+    height: 50px;
+}
+
+.box_add_to_buket input{
+    width: 15px;
+    height: 15px;
+}
+
+.image_box{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image_box img{
+    max-height: 90%;
+    max-width: 90%;
+}
+
+.image_box, .buy_favorite_price{
+    width: 20%;
+}
+
+.info_box{
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.box_data{
+    flex: 1;
+    max-height: 90%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 5vh;
+}
+
+.name_item{
+    color: black;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.name_item:hover{
+    color: var(--first_main_color);
+}
+
+.name_item:active{
+    color: var(--second_main_color);
+}
+
+.feedback_item{
+    display: flex;
+    flex-direction: column;
+}
+
+.image_star{
+    width: 15px;
+    height: 15px;
+}
+
+.price_item{
+    width: 100%; 
+    text-align: center; 
+    font-size: 26px;
+}
+
+.buy_favorite{
+    margin-top: 1vh;
+    display: flex;
+    width: 100%;
+}
+
+.buy_favorite_price{
+    margin-top: 5vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.box_center{
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    column-gap: 1vw;
+}
+
+.favorite{
+    background-color: whitesmoke;
+    border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.6;
+}
+
+.favorite:hover, .favorite:hover > *{
+    opacity: 0.8;
+}
+
+.favorite:active, .favorite:active > *{
+    opacity: 1;
+}
+
+.image_heart{
+    width: 50%;
+    height: 50%;
+    opacity: 0.5;
+}
+
+.box_change_count_item{
+    display: flex;
+    width: 10vw;
+    height: 4vh;
+    border: 1px solid black;
+    border-radius: 5px;
+    font-size: 20px;
+    min-width: 100px;
+    min-height: 30px;
+}
+
+.box_change_count_item > *{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.link_to_chanhe_count{
+    text-decoration: none;
+    color: black;
+}
+
+.link_to_chanhe_count:hover{
+    color: rgb(100, 100, 100);
+    background-color: rgb(240, 240, 240);
+    border-radius: 5px;
+}
+
+.link_to_chanhe_count:active{
+    color: rgb(150, 150, 150);
+}
+
+.link_buy{
+    width: 200px;
+    height: 40px;
+    border: 2px solid black;
+    border-radius: 10px;
+    display: flex;
+    background-color: transparent;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.link_buy:hover{
+    background-color: var(--first_main_color);
+    color: white;
+}
+
+.link_buy:active{
+    background-color: var(--second_main_color);
+    color: white;
+}
+
+.box_about_order{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 96%;
+    height: 80%;
+}
+
+.box_small{
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+}
+
+@media (max-width: 1000px){
+    .box_about_order div h3{
+        font-size: 0.9em;
+    }
+    .link_buy{
+        width: 150px;
+        font-size: 12px;
+    }
+    .box_title h1{
+        width: 80%;
+    }
+    .box_info_instruments h3{
+        font-size: 1em;
+    }
+    .box_selected_all{
+        width: 100px;
+        height: 30px;
+        font-size: 12px;
+    }
+    .card_item{
+        flex-direction: column;
+        max-height: 100%;
+        min-height: 400px;
+        width: 80%;
+        justify-content: center;
+        align-items: center;
+        row-gap: 2vh;
+    }
+    .name_item, .box_change_count_item{
+        font-size: 16px;
+    }
+    .buy_items_btn{
+        font-size: 12px;
+    }
+    .feedback_text, .count_text{
+        font-size: 14px;
+    }
+    .price_item{
+        font-size: 22px;
+    }
+    .buy_favorite_price{
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 0;
+    }
+    .favorite{
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media(max-width: 500px){
+    .link_buy{
+        width: 100px;
+    }
+    .name_item{
+        font-size: 14px;
+    }
+    .price_item{
+        font-size: 18px;
+    }
+    .feedback_text, .count_text{
+        font-size: 12px;
+    }
+}

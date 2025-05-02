@@ -1,0 +1,90 @@
+{% extends 'TechWay/base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block head %}
+        <title>TechWay - </title> <!-- Вставить название товара -->
+        <link rel="stylesheet" href="{% static 'techway/styles/item_page_style.css' %}">
+    {% endblock head %}
+</head>
+<body>
+    {% block body %}
+        <div class="container main_box">
+            <div class="box_margin">
+                <div class="box_all_catalog_item">
+                    <p>Каталог > Красота и здоровье > Укладка и сушка волос > Фены-щетки > Фен-щетка Tuvio HBI1411 черный</p>
+                </div>
+                <h1 class="box_margin title_text">Фен-щетка Tuvio HBI1411 черный</h1>
+                <div class="box_item box_margin">
+                    <div class="box_images">
+                        <div class="box_arrow">
+                            <img src="{% static 'techway/images/down-arrow.png' %}" alt="" id="back_to_image">
+                        </div>
+                        <div class="all_image_item">
+                            <img src="{% static 'techway/images/1.png' %}" alt="">
+                            <img src="{% static 'techway/images/heart.png' %}" alt="">
+                            <img src="{% static 'techway/images/list.png' %}" alt="">
+                        </div>
+                        <div class="box_arrow">
+                            <img src="{% static 'techway/images/down-arrow.png' %}" alt="" id="next_to_image">
+                        </div>
+                    </div>
+                    <div class="box_data">
+                        <div class="box_top">
+                            <div class="box_price_feedback">
+                                <h2 class="price_item">799 &#8381</h2>
+                                <div class="feedback_item">
+                                    <div>
+                                        <p class="feedback_text"><img class="image_star" src="{% static 'techway/images/star.png' %}" alt=""> 4 | 11 отзыва(-ов)</p>
+                                    </div>
+                                    <div class="count_text">
+                                        <p>В наличие 1000 шт</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box_center">
+                            <div>
+                                <a class="favorite" href="#" title="добавить в избранное">
+                                    <img class="image_heart" src="{% static 'techway/images/heart.png' %}" alt="">
+                                </a>
+                                <button class="link_buy" title="добавить в корзину"><span>Купить</span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    
+                <h1 class="box_margin title_text">Характеристики</h1>
+                <div class="box_specifications box_margin">
+                    <div class="box_center_specifications">
+                        
+                        <div class="box_specification">
+                            <h3>Мощность</h3>
+                            <p>1500 Вт</p>
+                        </div>
+                        <div class="box_specification">
+                            <h3>Мощность</h3>
+                            <p>1500 Вт</p>
+                        </div>
+                        <div class="box_specification">
+                            <h3>Мощность</h3>
+                            <p>1500 Вт</p>
+                        </div>
+                        <div class="box_specification">
+                            <h3>Мощность</h3>
+                            <p>1500 Вт</p>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="{% static 'techway/scripts/item_page_script.js' %}"></script>
+    {% endblock body %}
+</body>
+</html>
