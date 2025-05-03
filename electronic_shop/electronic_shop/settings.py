@@ -35,13 +35,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    # "techway.apps.TechwayConfig",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "techway.apps.TechwayConfig",
+    'rest_framework',
+    "api_electronic_shop.apps.ApiElectronicShopConfig",
 ]
 
 MIDDLEWARE = [

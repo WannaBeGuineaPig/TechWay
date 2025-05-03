@@ -95,6 +95,26 @@
     background-color: var(--second_main_color);
 }
 
+.box_password{
+    width: 100%;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    column-gap: 1vw;
+}
+
+#visibility_password_img{
+    max-width: 40px;
+    max-height: 40px;
+}
+#visibility_password_img:hover{
+    opacity: 0.6;
+}
+
+#visibility_password_img:active{
+    opacity: 0.4;
+}
+
 @media(max-width: 1000px){
     .box_auth{
         row-gap: 2vh;
