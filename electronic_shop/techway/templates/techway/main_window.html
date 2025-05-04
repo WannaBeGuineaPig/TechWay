@@ -20,12 +20,19 @@
             <div class="box_sort_link box_margin">
                 <p>Сортировка: <button class="sort_link" onclick="click_sort_link()" id="sort_link" style="color: rgb(0, 166, 255);">сначала популярные</button></p>
             </div>
-            
-            <div class="box_margin all_cards_item">
+
+            {% if categories %}
+                <div class="box_margin box_categories">
+                    <!-- <p class="categories">Бытовая техника > Встраиваемая техника > Варочные панели</p> -->
+                    <p class="categories">categories[0] > categories[1] > categories[2]</p>
+                </div>
+            {% endif %}
+
+            {% include 'TechWay/product_previews_list.html' %}
+            <!-- <div class="box_margin all_cards_item">
                 <div class="box_categories">
                     <p class="categories">Бытовая техника > Встраиваемая техника > Варочные панели</p>
                 </div>
-                <!-- карточка товара -->
                 <div class="card_item box_margin">
                     <div class="image_box">
                         <img src="{% static 'techway/images/1.png' %}" alt="фото товара">
@@ -57,9 +64,7 @@
                         </div>
                     </div>
                 </div>
-                <!--  -->
-                
-            </div>
+            </div> -->
             
             <!-- Кнопки на переход сраницы с другими товарами -->
             <div class="page_box">
@@ -74,7 +79,7 @@
             <!--  -->
             <section class="types_sort" id="box_types_sort" style="visibility: hidden;">
                 <div>
-                    <input type="radio" id="popular_first" name="sort" value="popular_first" checked ></input>
+                    <input type="radio" id="popular_first" name="sort" value="popular_first" checked></input>
                     <label for="popular_first">Сначала популярные</label>
                 </div>
                 <div>

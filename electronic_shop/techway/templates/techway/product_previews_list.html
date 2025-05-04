@@ -1,0 +1,45 @@
+{% load static %}
+
+<div class="box_margin all_cards_item" id="box_product_list">
+
+    <!-- карточка товара -->
+    {% if product_list %}
+    {% for product in product_list %}
+        <div class="card_item box_margin">
+                <div class="image_box">
+                    <img src="{% static 'techway/images/1.png' %}" alt="фото товара">
+                </div>
+                <div class="info_box">
+                    <div class="box_data">
+                        <div>
+                            <a class="name_item" href="#">{{ product.name }}</a>
+                        </div>
+                        <div class="feedback_item">
+                            <div>
+                                <p class="feedback_text"><img class="image_star" src="{% static 'techway/images/star.png' %}" alt=""> {{ product.feedback }} | {{ product.rating_count }} отзыва(-ов)</p>
+                            </div>
+                            <div class="count_text">
+                                <p>В наличие {{ product.amount }}(шт)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="buy_favorite_price">
+                    <p class="price_item">{{ product.price }} &#8381</p>
+                    <div class="buy_favorite">
+                        <div class="box_center">
+                            <a class="favorite" href="#" title="добавить в избранное">
+                                <img class="image_heart" src="{% static 'techway/images/heart.png' %}" alt="">
+                            </a>
+                            <button class="link_buy" title="добавить в корзину"><span>Купить</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+    {% else %}
+        <h1 class="title_text">Товары не найдены</h1>
+    {% endif %}
+    <!--  -->
+</div>

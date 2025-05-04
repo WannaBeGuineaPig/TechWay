@@ -99,7 +99,6 @@ class Product(models.Model):
         managed = False
         db_table = 'product'
 
-
 class ProductPhoto(models.Model):
     idproduct_photo = models.AutoField(primary_key=True)
     id_product = models.ForeignKey(Product, models.DO_NOTHING, db_column='id_product')

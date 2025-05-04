@@ -20,19 +20,19 @@ class ProductList(APIView):
             return Response(ProductSerializer(product_list, many=True).data)
         
         match(request.GET['sort']):
-            case 'Сначала популярные':
+            case 'popular_first':
                 pass
 
-            case 'Сначала недорогие':
+            case 'low_cost_first':
                 product_list = product_list.order_by('price')
 
-            case 'Сначала дорогие':
+            case 'expensive_first':
                 product_list = product_list.order_by('-price')
 
-            case 'По количеству отзывов':
+            case 'number_of_feedback':
                 product_list = product_list.order_by('-rating_count')
 
-            case 'Сначала с лучшей оценкой':
+            case 'best_feedback':
                 product_list = product_list.annotate(feedback=F('rating_sum') / F('rating_count')).order_by('-feedback')
 
         return Response(ProductSerializer(product_list, many=True).data)
@@ -50,7 +50,7 @@ class AuthorizationRegistrationUser(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.POST, partial=True)
         if serializer.is_valid():
-            serializer.save(status='Активен', position='Клиент', password=hash_password(serializer.data['password']))
+            serializer.save(status='Активен', position='Клиент', password=hash_password(request.POST['password']))
             return Response(serializer.validated_data)
 
         return Response(serializer.errors, status=status.HTTP_409_CONFLICT)

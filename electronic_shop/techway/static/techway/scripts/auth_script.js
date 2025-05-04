@@ -7,7 +7,7 @@ function updatePosition() {
     arr_data.forEach(element => {
         checkPlaceHolder(element[0], element[1]);
     });
-}
+};
 
 function checkPlaceHolder(label_id, input_id, ) {
     input = document.getElementById(input_id);

@@ -10,5 +10,6 @@ urlpatterns = [
     path('personal_account', views.personal_account_window, name='personal_account'),
     path('authorization', views.authorization_window, name='auth'),
     path('registration', views.registration_window, name='reg'),
-    path('product/<int:product_id>', views.product_window, name='reg')
+    path('product/<int:product_id>', views.product_window, name='reg'),
+    path('update_list_product/', views.update_product_list)
 ]
