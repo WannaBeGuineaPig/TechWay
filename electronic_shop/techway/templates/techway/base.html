@@ -68,10 +68,17 @@
                 </a>
             </div>
             <div class="login_box">
-                <a href="{% url 'TechWay:personal_account' %}" class="link_box">    
-                    <img src="{% static 'techway/images/user-interface.png' %}" alt="">
-                    <p>Войти</p>
-                </a>
+                {% if 'id_user' in request.session %}
+                    <a href="{% url 'TechWay:personal_account' %}" class="link_box">    
+                        <img src="{% static 'techway/images/user-interface.png' %}" alt="">
+                        <p>Кабинет</p>
+                    </a>
+                {% else %}
+                    <a href="{% url 'TechWay:auth' %}" class="link_box">    
+                        <img src="{% static 'techway/images/user-interface.png' %}" alt="">
+                        <p>Войти</p>
+                    </a>
+                {% endif %}
             </div>
         </div>
     </header>
@@ -96,7 +103,11 @@
                     <a href="{% url 'TechWay:backet' %}"><img src="{% static 'techway/images/shopping-basket.png' %}" alt=""><div>Корзина</div></a>
                 </li>
                 <li>
-                    <a href="{% url 'TechWay:personal_account' %}"><img src="{% static 'techway/images/user-interface.png' %}" alt=""><div>Войти</div></a>
+                    {% if 'id_user' in request.session %}
+                        <a href="{% url 'TechWay:personal_account' %}"><img src="{% static 'techway/images/user-interface.png' %}" alt=""><div>Кабинет</div></a>
+                    {% else %}
+                        <a href="{% url 'TechWay:auth' %}"><img src="{% static 'techway/images/user-interface.png' %}" alt=""><div>Войти</div></a>
+                    {% endif %}
                 </li>
             </ul>
         </nav>
@@ -147,7 +158,11 @@
                     <li><a href="{% url 'TechWay:catalog' %}">Каталог</a></li>
                     <li><a href="{% url 'TechWay:favorite' %}">Избранное</a></li>
                     <li><a href="{% url 'TechWay:backet' %}">Корзина</a></li>
-                    <li><a href="{% url 'TechWay:personal_account' %}">Войти</a></li>
+                    {% if 'id_user' in request.session %}
+                        <li><a href="{% url 'TechWay:personal_account' %}">Кабинет</a></li>
+                    {% else %}
+                        <li><a href="{% url 'TechWay:auth' %}">Войти</a></li>
+                    {% endif %}
                 </ul>
             </nav>
             <div class="contact_information">

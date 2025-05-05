@@ -44,7 +44,6 @@ class AuthorizationRegistrationUser(APIView):
             return Response(model_to_dict(user))
 
         user = get_object_or_404(User, mail=request.GET['mail'], password=hash_password(request.GET['password']))
-        # user = get_object_or_404(User, mail=request.GET['mail'], password=request.GET['password'])
         return Response(model_to_dict(user))
     
     def post(self, request):

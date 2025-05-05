@@ -16,7 +16,7 @@
     <div class="container main_box center_elements">
         <div class="main_box_auth">
             <h1 class="text_align_center title_text">Авторизация</h1>
-            <form action="" method="post" class="box_auth">
+            <form action="" method="post" class="box_auth" id="form_auth">
                 {% csrf_token %}
                 <div class="box_input_data">
                     <div class="box_input_data_final">
@@ -29,7 +29,7 @@
                         <label for="password_input" id="label_password" class="label_for_input" style="display: none; width: 80%;">Введите пароль</label>
                         <div class="box_password">
                             <input class="input_data" type="text" name="input_password" id="password_input" oninput="checkPlaceHolder('label_password', 'password_input')" required pattern="^[A-Za-z\d]{5,}$">
-                            <!-- <img src="{% static 'techway/images/show.png' %}" alt="" id="visibility_password_img" onclick="visibility_password('visibility_password_img', 'password_input')">                         -->
+                            <img src="{% static 'techway/images/show.png' %}" alt="" id="visibility_password_img" onclick="visibility_password('visibility_password_img', 'password_input')">                        
                         </div>
                         <div class="box_link_to_reg">
                             <a class="link_to_reg" href="#">Восстановить пароль</a>
@@ -37,11 +37,11 @@
                         </div>
                     </div>
                 </div>
-                <input type="submit" value="Войти" class="sign_in_btn">
+                <input type="submit" value="Войти" id="sign_in_btn_id" class="sign_in_btn">
             </form>
         </div>
     </div>
-    <!-- <script src="{% static 'techway/scripts/index.js' %}"></script> -->
+    <script src="{% static 'techway/scripts/index.js' %}"></script>
     <script src="{% static 'techway/scripts/auth_script.js' %}"></script>
     {% endblock body %}
 </body>

@@ -14,9 +14,11 @@
     <body>
         {% block body %}
         <div class="container box_all_div">
-            <div class="box_margin">
-                <h2 class="number_of_items_found">Найдено: 169 товаров в 23 категориях</h2>
-            </div>
+            {% if product_list %}
+                <div class="box_margin">
+                    <h2 class="number_of_items_found">Найдено: {{ product_list|length }} товаров в 23 категориях</h2>
+                </div>
+            {% endif %}
             <div class="box_sort_link box_margin">
                 <p>Сортировка: <button class="sort_link" onclick="click_sort_link()" id="sort_link" style="color: rgb(0, 166, 255);">сначала популярные</button></p>
             </div>

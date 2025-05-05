@@ -21,6 +21,7 @@
 .label_for_input{
     color: gray;
     user-select: none;
+    width: 80%;
 }
 
 .main_box_auth{
@@ -51,7 +52,8 @@
 .box_input_data_final{
     display: flex;
     flex-direction: column;
-    width: 60%;
+    justify-content: space-between;
+    width: 80%;
 }
 .box_link_to_reg{
     height: 50px;
@@ -99,13 +101,13 @@
     width: 100%;
     display: flex; 
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     column-gap: 1vw;
 }
 
 #visibility_password_img{
-    max-width: 40px;
-    max-height: 40px;
+    max-width: 30px;
+    max-height: 30px;
 }
 #visibility_password_img:hover{
     opacity: 0.6;
@@ -149,6 +151,10 @@
     .box_link_to_reg{
         height: 40px;
         font-size: 10px;
+    }
+    #visibility_password_img{
+        max-width: 20px;
+        max-height: 20px;
     }
 }
 

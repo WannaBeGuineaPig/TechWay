@@ -21,6 +21,7 @@
 .label_for_input{
     color: gray;
     user-select: none;
+    width: 80%;
 }
 
 .main_box_auth{
@@ -51,7 +52,7 @@
 .box_input_data_final{
     display: flex;
     flex-direction: column;
-    width: 60%;
+    width: 80%;
 }
 .box_link_to_reg{
     height: 30px;
@@ -92,7 +93,30 @@
     background-color: var(--second_main_color);
 }
 
+.box_password{
+    width: 100%;
+    display: flex; 
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 1vw;
+}
+
+#visibility_password_img, #visibility_password_confirm_img{
+    max-width: 30px;
+    max-height: 30px;
+}
+#visibility_password_img:hover, #visibility_password_confirm_img:hover{
+    opacity: 0.6;
+}
+
+#visibility_password_img:active, #visibility_password_confirm_img:active{
+    opacity: 0.4;
+}
+
 @media(max-width: 1000px){
+    .main_box_auth{
+        width: 80%;
+    }
     .box_auth{
         row-gap: 1vh;
     }
@@ -121,11 +145,18 @@
 }
 
 @media(max-width: 500px){
+    .main_box_auth{
+        width: 90%;
+    }
     .box_input_data_final{
         width: 90%;
     }
     .input_data{
         height: 35px;
+    }
+    #visibility_password_img, #visibility_password_confirm_img{
+        max-width: 20px;
+        max-height: 20px;
     }
 }
 

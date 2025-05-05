@@ -7,7 +7,8 @@
     {% for product in product_list %}
         <div class="card_item box_margin">
                 <div class="image_box">
-                    <img src="{% static 'techway/images/1.png' %}" alt="фото товара">
+                    <!-- <img src="{% static 'techway/images/1.png' %}" alt="фото товара"> -->
+                    <img src="{{ product.url_path }}" alt="фото товара">
                 </div>
                 <div class="info_box">
                     <div class="box_data">

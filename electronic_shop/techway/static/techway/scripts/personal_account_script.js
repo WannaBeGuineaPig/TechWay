@@ -24,6 +24,8 @@ function checkPlaceHolder(label_id, input_id) {
     }
 };
 
-function deleteAccBtn() {
-    
-}
+$('#sign_out_btn_id').click(function(event) {
+
+    if(!confirm('Вы хотите выйти из аккаунта?')) event.preventDefault();
+
+});

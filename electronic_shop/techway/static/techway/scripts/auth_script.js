@@ -22,3 +22,56 @@ function checkPlaceHolder(label_id, input_id, ) {
         label.style.removeProperty('display');
     }
 };
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+};
+
+$('#form_auth').on( "submit", function( event ) {
+    event.preventDefault();
+    let currentHref = $(location).attr('href');
+    let newHref = currentHref.split('/');
+    let mail = $('#login_input').val();
+    let password = $('#password_input').val();
+    newHref[newHref.length - 1] = `api/auth_reg_user/?mail=${mail}&password=${password}`;
+    newHref = newHref.join('/');
+    const csrftoken = getCookie('csrftoken'); 
+    $.ajax({
+        url : newHref,
+        type : 'GET',
+        success : function(data){
+            let id_user = data['iduser'];
+            $.ajax({
+                url : currentHref, 
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                    },
+                data: {
+                    'id_user': id_user
+                
+                },
+                success : function(response) {
+                    let accountHref = currentHref.split('/');
+                    accountHref[accountHref.length - 1] = response.redirect_url
+                    window.location.href = accountHref.join('/');
+                }
+                });
+            },
+            error : function(data) {
+                alert('Пользователь не найден!');
+            }
+        })
+    });
+    
