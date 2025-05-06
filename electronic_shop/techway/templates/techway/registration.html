@@ -14,33 +14,39 @@
 <body>
     {% block body %}
     <div class="container main_box center_elements">
-        <div class="main_box_auth">
+        <div class="main_box_auth box_margin">
             <h1 class="text_align_center title_text">Регистрация</h1>
-            <form action="" method="post" class="box_auth">
+            <form action="" method="post" class="box_auth" id="form_auth">
                 {% csrf_token %}
+                <p class="error_text text_align_center" id="error_id">{{ dict_data.error }}</p>
                 <div class="box_input_data">
                     <div class="box_input_data_final">
                         <label for="login_input" id="label_mail" class="label_for_input" style="display: none;">Введите почту</label>
-                        <input class="input_data" type="text" name="input_mail" id="login_input" oninput="checkPlaceHolder('label_mail', 'login_input')" required pattern="^[A-Za-z0-9]{3,}[@][A-Za-z]{3,}[.][A-Za-z]+$" maxlength="255">
+                        <input class="input_data" type="text" name="input_mail" id="login_input" oninput="checkPlaceHolder('label_mail', 'login_input')" required pattern="^[A-Za-z0-9]{3,}[@][A-Za-z]{3,}[.][A-Za-z]+$" maxlength="255" value="{{ dict_data.mail }}">
                     </div>
                 </div>
                 <div class="box_input_data">
                     <div class="box_input_data_final">
                         <label for="last_name_input" id="label_last_name" class="label_for_input" style="display: none;">Введите фамилию</label>
-                        <input class="input_data" type="text" name="input_last_name" id="last_name_input" oninput="checkPlaceHolder('label_last_name', 'last_name_input')" required pattern="^[а-яёА-ЯЁ]{3,}$" maxlength="45">
+                        <input class="input_data" type="text" name="input_last_name" id="last_name_input" oninput="checkPlaceHolder('label_last_name', 'last_name_input')" required pattern="^[а-яёА-ЯЁ]{3,}$" maxlength="45" value="{{ dict_data.lastname }}">
                     </div>
                 </div>
                 <div class="box_input_data">
                     <div class="box_input_data_final">
                         <label for="first_name_input" id="label_first_name" class="label_for_input" style="display: none;">Введите имя</label>
-                        <input class="input_data" type="text" name="input_first_name" id="first_name_input" oninput="checkPlaceHolder('label_first_name', 'first_name_input')" required pattern="^[а-яёА-ЯЁ]{3,}$" maxlength="45">
+                        <input class="input_data" type="text" name="input_first_name" id="first_name_input" oninput="checkPlaceHolder('label_first_name', 'first_name_input')" required pattern="^[а-яёА-ЯЁ]{3,}$" maxlength="45" value="{{ dict_data.firstname }}">
+                    </div>
+                </div>
+                <div class="box_input_data">
+                    <div class="box_input_data_final">
+                        <input class="input_data" type="date" name="input_birthdate" required title="Выберете дату рождения" value="{{ dict_data.birthdate }}">
                     </div>
                 </div>
                 <div class="box_input_data">
                     <div class="box_input_data_final">
                         <label for="password_input" id="label_password" class="label_for_input" style="display: none;">Введите пароль</label>
                         <div class="box_password">
-                            <input class="input_data" type="text" name="input_password" id="password_input" oninput="checkPlaceHolder('label_password', 'password_input')" required pattern="^[A-Za-z\d]{5,}$" maxlength="100">
+                            <input class="input_data" type="password" name="input_password" id="password_input" oninput="checkPlaceHolder('label_password', 'password_input')" required pattern="^[A-Za-z\d]{5,}$" maxlength="100" value="{{ dict_data.password }}">
                             <img src="{% static 'techway/images/show.png' %}" alt="" id="visibility_password_img" onclick="visibility_password('visibility_password_img', 'password_input')">
                         </div>
                     </div>
@@ -49,7 +55,7 @@
                     <div class="box_input_data_final">
                         <label for="password_confirm_input" id="label_password_confirm" class="label_for_input" style="display: none;">Подтвердите пароль</label>
                             <div class="box_password">
-                                <input class="input_data" type="text" name="input_password_confirm" id="password_confirm_input" oninput="checkPlaceHolder('label_password_confirm', 'password_confirm_input')" required pattern="^[A-Za-z\d]{5,}$" maxlength="100">
+                                <input class="input_data" type="password" name="input_password_confirm" id="password_confirm_input" oninput="checkPlaceHolder('label_password_confirm', 'password_confirm_input')" required pattern="^[A-Za-z\d]{5,}$" maxlength="100" value="{{ dict_data.password_confirm }}">
                                 <img src="{% static 'techway/images/show.png' %}" alt="" id="visibility_password_confirm_img" onclick="visibility_password('visibility_password_confirm_img', 'password_confirm_input')">
                             </div>
                             <div class="box_link_to_reg">

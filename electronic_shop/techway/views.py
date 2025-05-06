@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.http import HttpRequest, HttpResponse, JsonResponse
-import requests
+import requests, datetime as dt
 from python_moduls.add_product_data import *
+from python_moduls.modul import *
 
 URL_API = 'http://127.0.0.1:8000/api/'
 
@@ -54,17 +54,41 @@ def personal_account_window(request: HttpRequest) -> HttpResponse:
     Представление для обработки страницы с личным кабинетом.
     '''
     if request.method == 'GET':
-        return render(request, 'techway\\personal_account.html')
+        user_dict = requests.get(URL_API + f'auth_reg_user/{request.session["id_user"]}').json()
+        new_type_birthdate = user_dict['birthdate'].split('T')[0]
+        user_dict.setdefault('new_type_birthdate', new_type_birthdate)
+        return render(request, 'techway\\personal_account.html', context=user_dict)
     
     else:
         if 'btn' in request.POST and request.POST['btn'] == 'Выйти из аккаунта':
             request.session.pop('id_user')
             return redirect('TechWay:home')
         
+        elif 'btn' in request.POST and request.POST['btn'] == 'Изменить':
+            json_data = {
+                'iduser': request.session['id_user'],
+                'mail': request.POST['input_mail'],
+                'lastname': request.POST['input_last_name'],
+                'firstname': request.POST['input_first_name'],
+                'midlename': request.POST['input_midle_name'],
+                'birthdate': request.POST['input_birthdate'],
+                'phone_number': request.POST['input_phone_number'],
+                'password': request.POST['input_password'],
+                'new_password': request.POST['input_password_update'],
+            }
+            user = requests.put(URL_API + 'auth_reg_user/', data=json_data)
+            json_data.setdefault('new_type_birthdate', json_data['birthdate'].split('T')[0])    
+            json_data.setdefault('error', user.content.decode('UTF-8')) if user.status_code == 409 else json_data.setdefault('complete', 'Данные успешно изменены!') 
+                
+            return render(request, 'techway\\personal_account.html', context=json_data)
+                
+        
         elif 'btn' in request.POST and request.POST['btn'] == 'Удалить аккаунт':
+            requests.delete(URL_API + 'auth_reg_user/', data={'iduser': request.session['id_user']})
+            request.session.pop('id_user')
             return redirect('TechWay:home')
 
-        elif 'btn' in request.POST and request.POST['btn'] == 'История':
+        else:
             return redirect('TechWay:home')
 
 def authorization_window(request: HttpRequest) -> HttpResponse:
@@ -76,7 +100,7 @@ def authorization_window(request: HttpRequest) -> HttpResponse:
     
     else:
         request.session['id_user'] = request.POST['id_user']
-        return JsonResponse({"redirect_url": "personal_account"})
+        return JsonResponse({"redirect_url" : "personal_account"})
 
 def registration_window(request: HttpRequest) -> HttpResponse:
     '''
@@ -86,7 +110,22 @@ def registration_window(request: HttpRequest) -> HttpResponse:
         return render(request, 'techway\\registration.html')
     
     else:
-        pass
+        dict_data = {
+            'lastname' : request.POST['input_last_name'],
+            'firstname' : request.POST['input_first_name'],
+            'birthdate' : request.POST['input_birthdate'],
+            'mail' : request.POST['input_mail'],
+            'password' : request.POST['input_password']
+        }
+        response_user_create = requests.post(URL_API + 'auth_reg_user/', data=dict_data)
+        
+        if response_user_create.status_code == 409:
+            dict_data.setdefault('password_confirm', request.POST['input_password_confirm'])
+            errror = [f'{translate_text(i).capitalize()}: {translate_text(response_user_create.json()[i][0]).lower()}' for i in response_user_create.json()]
+            dict_data.setdefault(f'error', errror[0])
+            return render(request, 'techway\\registration.html', context={'dict_data' : dict_data})
+    
+        return redirect('TechWay:auth')
     
 def product_window(request: HttpRequest, product_id: int) -> HttpResponse:
     '''

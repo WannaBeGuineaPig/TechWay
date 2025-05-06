@@ -16,7 +16,7 @@
 .main_box_personal_account{
     border: 1px solid black;
     width: 80%;
-    height: 75vh;
+    height: 95vh;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -83,13 +83,16 @@
 }
 
 .label_for_input{
+    width: 80%;
     color: gray;
     user-select: none;
 }
 
 .sign_in_btn, .sign_out_btn{
-    width: 250px;
-    height: 50px;
+    max-width: 250px;
+    max-height: 50px;
+    width: 20vw;
+    height: 6vh;
     border-radius: 10px;
     font-size: 18px;
     border: 4px solid lightgray;
@@ -121,13 +124,31 @@
     width: 60%;
 }
 
+.box_password{
+    width: 100%;
+    display: flex; 
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 1vw;
+}
+
+#visibility_password_img, #visibility_password_update_img{
+    max-width: 30px;
+    max-height: 30px;
+}
+#visibility_password_img:hover, #visibility_password_update_img:hover{
+    opacity: 0.6;
+}
+
+#visibility_password_img:active, #visibility_password_update_img:active{
+    opacity: 0.4;
+}
+
 @media(max-width: 1000px){
     .input_data, .label_for_input{
         font-size: 14px;
     }
     .sign_in_btn, .sign_out_btn{
-        width: 200px;
-        height: 40px;
         font-size: 14px;
     }
     .title_text{
@@ -136,11 +157,20 @@
     .title_for_update{
         font-size: 1.25em;
     }
+    .main_box_personal_account{
+        height: 105vh;
+    }
+    .box_input_data_final{
+        width: 85%;
+    }
+    .input_data{
+        height: 35px;
+    }
 }
 
 @media(max-width: 500px){
     .input_data{
-        height: 35px;
+        height: 30px;
     }
 }
 

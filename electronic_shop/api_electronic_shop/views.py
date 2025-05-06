@@ -1,9 +1,10 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.request import Request
 from rest_framework.views import APIView
 from .models import *
 from .serializers import *
-from python_moduls.modul_password import * 
+from python_moduls.modul import * 
 from django.shortcuts import get_object_or_404
 from django.forms.models import model_to_dict
 from django.db.models import F
@@ -13,7 +14,7 @@ class UserList(generics.ListAPIView):
     serializer_class = UserSerializer
 
 class ProductList(APIView):
-    def get(self, request):
+    def get(self, request: Request):
         product_list = Product.objects.all()
         
         if 'sort' not in request.GET:
@@ -38,23 +39,50 @@ class ProductList(APIView):
         return Response(ProductSerializer(product_list, many=True).data)
 
 class AuthorizationRegistrationUser(APIView):
-    def get(self, request, pk = None):
+    def get(self, request: Request, pk = None):
         if pk:
             user = get_object_or_404(User, iduser=pk)
+
             return Response(model_to_dict(user))
 
         user = get_object_or_404(User, mail=request.GET['mail'], password=hash_password(request.GET['password']))
+        if user.status == 'Удалён':
+            return Response('Пользователь не найден!', status=status.HTTP_404_NOT_FOUND)
+
         return Response(model_to_dict(user))
     
-    def post(self, request):
+    def post(self, request: Request):
         serializer = UserSerializer(data=request.POST, partial=True)
         if serializer.is_valid():
             serializer.save(status='Активен', position='Клиент', password=hash_password(request.POST['password']))
-            return Response(serializer.validated_data)
+            return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_409_CONFLICT)
 
 
+    def put(self, request: Request):
+        user = get_object_or_404(User, iduser=request.data['iduser'])
+        if hash_password(request.data['password']) != user.password:
+            return Response(data='Не верный пароль!', status=status.HTTP_409_CONFLICT)
+
+        if (check_user_mail:=User.objects.filter(mail=request.data['mail']).first()) != None and check_user_mail.iduser != user.iduser:
+            return Response(data='Такая почта уже существует!', status=status.HTTP_409_CONFLICT)
+
+        user.lastname = request.data['lastname']
+        user.firstname = request.data['firstname']
+        user.midlename = request.data['midlename']
+        user.birthdate = request.data['birthdate']
+        user.mail = request.data['mail']
+        user.password = user.password if request.data['new_password'] == '' else hash_password(request.data['new_password'])
+        user.phone_number = request.data['phone_number']
+        user.save()
+        return Response(model_to_dict(user), status=status.HTTP_201_CREATED)
+    
+    def delete(self, request: Request):
+        user = get_object_or_404(User, iduser=request.data['iduser'])
+        user.status = 'Удалён'
+        user.save()
+        return Response('Пользователь удалён!')
 
 # class AuthRegUpdateUser(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = User.objects.all()

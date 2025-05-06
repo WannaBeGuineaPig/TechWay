@@ -55,6 +55,11 @@ body{
     margin-top: 3vh;
 }
 
+.error_text{
+    color: red;
+    font-size: 18px;
+}
+
 /*  */
 
 /* Шапка сайта */
@@ -285,6 +290,9 @@ body{
 }
 
 @media(max-width: 1000px){
+    .error_text{
+        font-size: 14px;
+    }
     .title_text{
         font-size: 1.5em;
     }

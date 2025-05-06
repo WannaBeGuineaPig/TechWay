@@ -22,3 +22,11 @@ function checkPlaceHolder(label_id, input_id, ) {
         label.style.removeProperty('display');
     }
 };
+
+$('#form_auth').on('submit', function(event){
+    if($('#password_input').val() != $('#password_confirm_input').val()) {
+        event.preventDefault();
+        $('#error_id').text('Пароли не совпадают!');
+        
+    }
+});

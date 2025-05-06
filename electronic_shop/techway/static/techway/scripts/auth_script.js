@@ -39,6 +39,7 @@ function getCookie(name) {
 };
 
 $('#form_auth').on( "submit", function( event ) {
+    $(this).css('filter', 'blur(10px)')
     event.preventDefault();
     let currentHref = $(location).attr('href');
     let newHref = currentHref.split('/');
@@ -57,20 +58,24 @@ $('#form_auth').on( "submit", function( event ) {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': csrftoken
-                    },
+                },
                 data: {
                     'id_user': id_user
-                
+                    
                 },
                 success : function(response) {
                     let accountHref = currentHref.split('/');
                     accountHref[accountHref.length - 1] = response.redirect_url
                     window.location.href = accountHref.join('/');
                 }
-                });
-            },
-            error : function(data) {
-                alert('Пользователь не найден!');
+            });
+        },
+        error : function(data) {
+            $('#error_id').text('');
+            $('#form_auth').fadeTo("midle", 1, function(){
+                $(this).css('filter', '');
+                $('#error_id').text('Пользователь не найден!');
+            });
             }
         })
     });

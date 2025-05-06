@@ -17,40 +17,69 @@
     <div class="container main_box box_centering">
         <h1 class="text_align_center title_text">Личный кабинет</h1>
         <div class="main_box_personal_account">
-            <h1 class="text_align_center title_for_update">Изменение данных</h1>
+            <h1 class="text_align_center title_for_update box_margin">Изменение данных</h1>
             <form action="" method="post" class="box_auth">
+                {% if error %}
+                    <p class="error_text text_align_center" id="error_id">{{ error }}</p>
+                {% endif %}
+                {% if complete %}
+                    <p class="error_text text_align_center" id="error_id" style="color: rgb(0, 145, 0);">{{ complete }}</p>
+                {% endif %}
                 {% csrf_token %}
                 <div class="box_input_data">
                     <div class="box_input_data_final">
                         <label for="login_input" id="label_mail" class="label_for_input" style="display: none;">Введите почту</label>
-                        <input class="input_data" type="text" name="input_mail" id="login_input" oninput="checkPlaceHolder('label_mail', 'login_input')" required pattern="^[A-Za-z0-9]{3,}[@][A-Za-z]{3,}[.][A-Za-z]+$" maxlength="255">
+                        <input class="input_data" type="text" name="input_mail" id="login_input" oninput="checkPlaceHolder('label_mail', 'login_input')" required pattern="^[A-Za-z0-9]{3,}[@][A-Za-z]{3,}[.][A-Za-z]+$" maxlength="255" value="{{ mail }}">
                     </div>
                 </div>
                 <div class="box_input_data">
                     <div class="box_input_data_final">
                         <label for="last_name_input" id="label_last_name" class="label_for_input" style="display: none;">Введите фамилию</label>
-                        <input class="input_data" type="text" name="input_last_name" id="last_name_input" oninput="checkPlaceHolder('label_last_name', 'last_name_input')" required pattern="^[а-яёА-ЯЁ]{3,}$" maxlength="45">
+                        <input class="input_data" type="text" name="input_last_name" id="last_name_input" oninput="checkPlaceHolder('label_last_name', 'last_name_input')" required pattern="^[а-яёА-ЯЁ]{3,}$" maxlength="45" value="{{ lastname }}">
                     </div>
                 </div>
                 <div class="box_input_data">
                     <div class="box_input_data_final">
                         <label for="first_name_input" id="label_first_name" class="label_for_input" style="display: none;">Введите имя</label>
-                        <input class="input_data" type="text" name="input_first_name" id="first_name_input" oninput="checkPlaceHolder('label_first_name', 'first_name_input')" required pattern="^[а-яёА-ЯЁ]{3,}$" maxlength="45">
+                        <input class="input_data" type="text" name="input_first_name" id="first_name_input" oninput="checkPlaceHolder('label_first_name', 'first_name_input')" required pattern="^[а-яёА-ЯЁ]{3,}$" maxlength="45" value="{{ firstname }}">
+                    </div>
+                </div>
+                <div class="box_input_data">
+                    <div class="box_input_data_final">
+                        <label for="midle_name_input" id="label_midle_name" class="label_for_input" style="display: none;">Введите отчество(при наличие)</label>
+                        <input class="input_data" type="text" name="input_midle_name" id="midle_name_input" oninput="checkPlaceHolder('label_midle_name', 'midle_name_input')" pattern="^[а-яёА-ЯЁ]{3,}$" maxlength="45" value="{% if midlename %}{{ midlename }}{% endif %}">
+                    </div>
+                </div>
+                <div class="box_input_data">
+                    <div class="box_input_data_final">
+                        <input class="input_data" type="date" name="input_birthdate" value="{{ new_type_birthdate }}" title="Выберете дату рождения" required>
+                    </div>
+                </div>
+                <div class="box_input_data">
+                    <div class="box_input_data_final">
+                        <label for="phone_number_input" id="label_phone_number" class="label_for_input" style="display: none;">Введите телефон</label>
+                        <input class="input_data" type="text" name="input_phone_number" id="phone_number_input" oninput="checkPlaceHolder('label_phone_number', 'phone_number_input')" pattern="^\d{11,}$" required maxlength="30" value="{{ phone_number }}">
                     </div>
                 </div>
                 <div class="box_input_data">
                     <div class="box_input_data_final">
                         <label for="password_input" id="label_password" class="label_for_input" style="display: none;">Введите пароль</label>
-                        <input class="input_data" type="text" name="input_password" id="password_input" oninput="checkPlaceHolder('label_password', 'password_input')" required pattern="^[A-Za-z\d]{5,}$" maxlength="100">
+                        <div class="box_password">
+                            <input class="input_data" type="password" name="input_password" id="password_input" oninput="checkPlaceHolder('label_password', 'password_input')" required pattern="^[A-Za-z\d]{5,}$" maxlength="100">
+                            <img src="{% static 'techway/images/show.png' %}" alt="" id="visibility_password_img" onclick="visibility_password('visibility_password_img', 'password_input')">
+                        </div>
                     </div>
                 </div>
                 <div class="box_input_data">
                     <div class="box_input_data_final">
                         <label for="password_update_input" id="label_password_update" class="label_for_input" style="display: none;">Введите новый пароль</label>
-                        <input class="input_data" type="text" name="input_password_update" id="password_update_input" oninput="checkPlaceHolder('label_password_update', 'password_update_input')" required pattern="^[A-Za-z\d]{5,}$" maxlength="100">
+                        <div class="box_password">
+                            <input class="input_data" type="password" name="input_password_update" id="password_update_input" oninput="checkPlaceHolder('label_password_update', 'password_update_input')" pattern="^[A-Za-z\d]{5,}$" maxlength="100">
+                            <img src="{% static 'techway/images/show.png' %}" alt="" id="visibility_password_update_img" onclick="visibility_password('visibility_password_update_img', 'password_update_input')">
+                        </div>
                     </div>
                 </div>
-                <input type="submit" value="Изменить" class="sign_in_btn">
+                <input type="submit" name="btn" value="Изменить" class="sign_in_btn">
             </form>
         </div>
         <div class="box_info_acc">
@@ -64,6 +93,7 @@
         </div>
     </div>
 
+    <script src="{% static 'techway/scripts/index.js' %}"></script>
     <script src="{% static 'techway/scripts/personal_account_script.js' %}"></script>
 
     {% endblock body %}

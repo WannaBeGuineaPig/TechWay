@@ -18,6 +18,7 @@
             <h1 class="text_align_center title_text">Авторизация</h1>
             <form action="" method="post" class="box_auth" id="form_auth">
                 {% csrf_token %}
+                <p class="error_text" id="error_id"></p>
                 <div class="box_input_data">
                     <div class="box_input_data_final">
                         <label for="login_input" id="label_mail" class="label_for_input" style="display: none;">Введите почту</label>
@@ -28,7 +29,7 @@
                     <div class="box_input_data_final">
                         <label for="password_input" id="label_password" class="label_for_input" style="display: none; width: 80%;">Введите пароль</label>
                         <div class="box_password">
-                            <input class="input_data" type="text" name="input_password" id="password_input" oninput="checkPlaceHolder('label_password', 'password_input')" required pattern="^[A-Za-z\d]{5,}$">
+                            <input class="input_data" type="password" name="input_password" id="password_input" oninput="checkPlaceHolder('label_password', 'password_input')" required pattern="^[A-Za-z\d]{5,}$">
                             <img src="{% static 'techway/images/show.png' %}" alt="" id="visibility_password_img" onclick="visibility_password('visibility_password_img', 'password_input')">                        
                         </div>
                         <div class="box_link_to_reg">
