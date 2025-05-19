@@ -8,7 +8,7 @@
         <div class="card_item box_margin">
                 <div class="image_box">
                     <!-- <img src="{% static 'techway/images/1.png' %}" alt="фото товара"> -->
-                    <img src="{{ product.url_path }}" alt="фото товара">
+                    <img src="{% static 'techway/images/photo_items/' %}{{ product.url_photos.0 }}" alt="фото товара">
                 </div>
                 <div class="info_box">
                     <div class="box_data">

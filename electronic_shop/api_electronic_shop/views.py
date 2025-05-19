@@ -17,26 +17,33 @@ class ProductList(APIView):
     def get(self, request: Request):
         product_list = Product.objects.all()
         
-        if 'sort' not in request.GET:
-            return Response(ProductSerializer(product_list, many=True).data)
+        if 'sort' in request.GET:
         
-        match(request.GET['sort']):
-            case 'popular_first':
-                pass
+            match(request.GET['sort']):
+                case 'popular_first':
+                    pass
 
-            case 'low_cost_first':
-                product_list = product_list.order_by('price')
+                case 'low_cost_first':
+                    product_list = product_list.order_by('price')
 
-            case 'expensive_first':
-                product_list = product_list.order_by('-price')
+                case 'expensive_first':
+                    product_list = product_list.order_by('-price')
 
-            case 'number_of_feedback':
-                product_list = product_list.order_by('-rating_count')
+                case 'number_of_feedback':
+                    product_list = product_list.order_by('-rating_count')
 
-            case 'best_feedback':
-                product_list = product_list.annotate(feedback=F('rating_sum') / F('rating_count')).order_by('-feedback')
+                case 'best_feedback':
+                    product_list = product_list.annotate(feedback=F('rating_sum') / F('rating_count')).order_by('-feedback')
 
-        return Response(ProductSerializer(product_list, many=True).data)
+        list_data = ProductSerializer(product_list, many=True).data
+
+        for item in range(len(list_data)):
+            list_photo_item = ProductPhoto.objects.filter(id_product=list_data[item]['idproduct'])
+            list_serializer = ProductPhotoSerializer(list_photo_item, many=True).data
+            list_data[item]['url_photos'] = [i['url_photo'] for i in list_serializer]
+
+        return Response(list_data)
+        # return Response(ProductSerializer(product_list, many=True).data)
 
 class AuthorizationRegistrationUser(APIView):
     def get(self, request: Request, pk = None):

@@ -23,33 +23,15 @@ function checkPlaceHolder(label_id, input_id, ) {
     }
 };
 
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-};
-
 $('#form_auth').on( "submit", function( event ) {
     $(this).css('filter', 'blur(10px)')
     event.preventDefault();
-    let currentHref = $(location).attr('href');
-    let newHref = currentHref.split('/');
     let mail = $('#login_input').val();
     let password = $('#password_input').val();
-    newHref[newHref.length - 1] = `api/auth_reg_user/?mail=${mail}&password=${password}`;
-    newHref = newHref.join('/');
+    let currentHref = $(location).attr('href');
     const csrftoken = getCookie('csrftoken'); 
     $.ajax({
-        url : newHref,
+        url : `${URLAPI}auth_reg_user/?mail=${mail}&password=${password}`,
         type : 'GET',
         success : function(data){
             let id_user = data['iduser'];
@@ -66,7 +48,7 @@ $('#form_auth').on( "submit", function( event ) {
                 success : function(response) {
                     let accountHref = currentHref.split('/');
                     accountHref[accountHref.length - 1] = response.redirect_url
-                    window.location.href = accountHref.join('/');
+                    window.location.href = response.redirect_url;
                 }
             });
         },

@@ -100,7 +100,7 @@ def authorization_window(request: HttpRequest) -> HttpResponse:
     
     else:
         request.session['id_user'] = request.POST['id_user']
-        return JsonResponse({"redirect_url" : "personal_account"})
+        return JsonResponse({"redirect_url" : redirect('TechWay:personal_account').url})
 
 def registration_window(request: HttpRequest) -> HttpResponse:
     '''

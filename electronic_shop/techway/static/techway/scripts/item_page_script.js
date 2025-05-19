@@ -1,9 +1,6 @@
 let numberImage = 0;
 let oldImg, newImage;
 
-// transform: translate(0, 50px);
-// display: none;
-
 $('#back_to_image').click(function(){
     if(numberImage == 0) return;
     numberImage--;
