@@ -7,6 +7,9 @@ urlpatterns = [
     path('auth_reg_user/<int:pk>', views.AuthorizationRegistrationUser.as_view()),
     path('product_list/', views.ProductList.as_view()),
     path('add_to_basket/', views.AddToBasket.as_view()),
+    path('basket_list/', views.BasketList.as_view()),
+    path('shop_list/', views.ShopList.as_view()),
+    path('update_data_order/', views.UpdateDataOrder.as_view()),
     path('', include('rest_framework.urls', namespace='rest_framework'))
 ]
 

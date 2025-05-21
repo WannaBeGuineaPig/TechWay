@@ -8,6 +8,7 @@ from python_moduls.modul import *
 from django.shortcuts import get_object_or_404
 from django.forms.models import model_to_dict
 from django.db.models import F
+from datetime import datetime
 
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
@@ -107,6 +108,45 @@ class AddToBasket(APIView):
         order_products.save()
         return Response(OrderproductSerializer(order_products).data, status=status.HTTP_201_CREATED)
     
+class BasketList(APIView):
+    def get(self, request: Request):
+        order = Order.objects.filter(id_user=request.GET['id_user'], status='Не оформлен').first()
+        if order == None:
+            return Response([], status=status.HTTP_204_NO_CONTENT)
+        
+        orderproduct = OrderproductSerializer(Orderproduct.objects.filter(id_order=order), many=True).data
+        for item in orderproduct:
+            item['product'] = ProductSerializer(Product.objects.get(idproduct=item['id_product'])).data
+            list_photo_item = ProductPhoto.objects.filter(id_product=item['id_product'])
+            list_serializer = ProductPhotoSerializer(list_photo_item, many=True).data
+            item['product']['url_photo'] = list_serializer[0]['url_photo']
+            item.pop('id_product')
+
+        return Response(orderproduct)
+    
+class ShopList(generics.ListAPIView):
+    queryset = Shop.objects.all()
+    serializer_class = ShopSerializer
+
+class UpdateDataOrder(APIView):
+    def post(self, request: Request):
+        order = get_object_or_404(Order, id_user=get_object_or_404(User, iduser=request.POST['id_user']), status='Не оформлен')
+
+        if 'status' in request.POST:
+            order.status = request.POST['status']
+            if request.POST['status'] == 'Оформлен':
+                order.payment_method = datetime.now()
+
+        if 'id_shop' in request.POST:
+            order.id_shop = get_object_or_404(Shop, idshop=request.POST['id_shop'])
+        
+        if 'payment_method' in request.POST:
+            order.payment_method = request.POST['payment_method']
+
+        order.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 # class AuthRegUpdateUser(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = User.objects.all()
 #     serializer_class = UserSerializer

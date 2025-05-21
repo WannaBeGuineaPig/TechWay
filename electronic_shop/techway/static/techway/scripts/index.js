@@ -26,3 +26,19 @@ function getCookie(name) {
     }
     return cookieValue;
 };
+
+function newViewPrice(text){
+    newText = "";
+    textSpit = text.split('.')
+    text = textSpit[0]
+    for(i=text.length - 1; i >= 0; i--)
+    {
+        newText += text[i];
+        if(i % 3 == 0) newText += " ";
+    }
+
+    newText = newText.split('').reverse().join('');
+
+    newText = textSpit.length == 2 ? newText + '.' + textSpit[1] : newText;
+    return newText
+}

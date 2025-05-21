@@ -21,3 +21,21 @@ $('.item_checkbox').click(function() {
 //     });
 //     return true;
 // }
+
+$(document).ready(function(){
+    $('#amount_items').text($('.card_item').length)
+    
+    sum_items = 0.0;
+
+    $('span.item_price_id').toArray().forEach(element => {
+        sum_items += parseFloat($(element).text())
+        $(element).text($(element).text());
+        // $(element).text(newViewPrice($(element).text()));
+    });
+    // $('#sum_items').text(newViewPrice(sum_items.toString()));
+    $('#sum_items').text(sum_items)
+});
+
+$('#ordering_form').submit(function(){
+    alert('Заказ оформлен');
+});

@@ -55,7 +55,40 @@ def backet_window(request: HttpRequest) -> HttpResponse:
         return redirect('TechWay:home')
 
     if request.method == 'GET':
-        return render(request, 'techway\\backet.html')
+        order_product = requests.get(f'{URL_API}basket_list/?id_user={request.session["id_user"]}')
+        shop_list = requests.get(f'{URL_API}shop_list/')
+        payment_method_list = [
+            {'id_payment_method' : 1, 'method' : 'Наличными'},
+            {'id_payment_method' : 2, 'method' : 'Картой'}
+        ]
+        return render(request, 'techway\\backet.html', context={
+            'order_product': [] if order_product.status_code == 204 else order_product.json(),
+            'shop_list' : shop_list.json(),
+            'payment_method_list' : payment_method_list 
+            })
+    
+    if request.method == 'POST':
+        payment_method_list = [
+            {'id_payment_method' : 1, 'method' : 'Наличными'},
+            {'id_payment_method' : 2, 'method' : 'Картой'}
+        ]
+
+        method = ''
+        for i in payment_method_list:
+            if i['id_payment_method'] == int(request.POST['select_payment_method']):
+                method = i['method']
+                break
+
+        json_data = {
+            'id_user' : request.session['id_user'],
+            'status' : 'Оформлен',
+            'payment_method' : method,
+            'id_shop' : request.POST['select_shop'],
+        }
+
+        requests.post(f'{URL_API}update_data_order/', data=json_data)
+
+        return redirect('TechWay:home')
 
 def personal_account_window(request: HttpRequest) -> HttpResponse:
     '''

@@ -99,7 +99,7 @@
     background-color: white;
     display: flex;
     justify-content: space-between;
-    max-height: 300px;
+    height: 300px;
     border-radius: 15px;
 }
 
@@ -114,14 +114,15 @@
 }
 
 .image_box{
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .image_box img{
-    max-height: 90%;
-    max-width: 90%;
+    max-height: 80%;
+    max-width: 80%;
 }
 
 .image_box, .buy_favorite_price{
@@ -145,16 +146,7 @@
 
 .name_item{
     color: black;
-    text-decoration: none;
     font-size: 18px;
-}
-
-.name_item:hover{
-    color: var(--first_main_color);
-}
-
-.name_item:active{
-    color: var(--second_main_color);
 }
 
 .feedback_item{
@@ -286,16 +278,48 @@
 }
 
 .box_small{
-    height: 100px;
+    height: 22vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     background-color: white;
     border-radius: 10px;
 }
 
+.select_data_to_order{
+    height: 50%;
+    width: 96%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: end;
+}
+
+.select_data{
+    font-size: 16px;
+    min-width: 100px;
+    max-width: 300px;
+}
+
+.select_shop, .select_payment_method{
+    display: flex;
+    column-gap: 1vw;
+} 
+
 @media (max-width: 1000px){
-    .box_about_order div h3{
+    .image_box, .buy_favorite_price{
+        width: 50%;
+    }
+
+    .image_box{
+        height: 45%;
+    }
+    .select_data{
+        font-size: 12px;
+        max-width: 200px;
+    }
+    .box_about_order div h3, .select_text{
         font-size: 0.9em;
     }
     .link_buy{
