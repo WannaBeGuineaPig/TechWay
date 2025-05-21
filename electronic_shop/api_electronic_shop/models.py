@@ -52,8 +52,8 @@ class Manufacturer(models.Model):
 class Order(models.Model):
     idorder = models.AutoField(primary_key=True)
     id_user = models.ForeignKey('User', models.DO_NOTHING, db_column='id_user')
-    id_shop = models.ForeignKey('Shop', models.DO_NOTHING, db_column='id_shop')
-    payment_method = models.CharField(max_length=9)
+    id_shop = models.ForeignKey('Shop', models.DO_NOTHING, blank=True, null=True, db_column='id_shop')
+    payment_method = models.CharField(blank=True, null=True, max_length=9)
     status = models.CharField(max_length=15)
     date_of_regestration = models.DateTimeField(blank=True, null=True)
 
@@ -63,7 +63,8 @@ class Order(models.Model):
 
 
 class Orderproduct(models.Model):
-    id_order = models.OneToOneField(Order, models.DO_NOTHING, db_column='id_order', primary_key=True)  # The composite primary key (id_order, id_product) found, that is not supported. The first column is selected.
+    id_orderproduct = models.AutoField(primary_key=True)
+    id_order = models.ForeignKey('Order', models.DO_NOTHING, db_column='id_order')
     id_product = models.ForeignKey('Product', models.DO_NOTHING, db_column='id_product')
     amount_product = models.IntegerField()
 

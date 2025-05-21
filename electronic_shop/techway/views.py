@@ -22,7 +22,7 @@ def main_window(request: HttpRequest) -> HttpResponse:
     Представление для обработки главной страницы.
     '''
     if request.method == 'GET':
-        response_product_list = requests.get(URL_API + 'product_list/')
+        response_product_list = requests.get(URL_API + 'product_list/' + (f'?iduser={request.session["id_user"]}' if 'id_user' in request.session else ''))
         product_list = response_product_list.json()
         product_list = calculate_feedback_and_set_image(response_product_list.json(), 'rating_sum', 'rating_count')
 
@@ -39,6 +39,10 @@ def favorite_window(request: HttpRequest) -> HttpResponse:
     '''
     Представление для обработки страницы с избранным.
     '''
+
+    if 'id_user' not in request.session:
+        return redirect('TechWay:home')
+
     if request.method == 'GET':
         return render(request, 'techway\\favorite.html')
 
@@ -46,6 +50,10 @@ def backet_window(request: HttpRequest) -> HttpResponse:
     '''
     Представление для обработки страницы с корзиной.
     '''
+    
+    if 'id_user' not in request.session:
+        return redirect('TechWay:home')
+
     if request.method == 'GET':
         return render(request, 'techway\\backet.html')
 
@@ -53,6 +61,10 @@ def personal_account_window(request: HttpRequest) -> HttpResponse:
     '''
     Представление для обработки страницы с личным кабинетом.
     '''
+
+    if 'id_user' not in request.session:
+        return redirect('TechWay:home')
+    
     if request.method == 'GET':
         user_dict = requests.get(URL_API + f'auth_reg_user/{request.session["id_user"]}').json()
         new_type_birthdate = user_dict['birthdate'].split('T')[0]
@@ -129,7 +141,16 @@ def registration_window(request: HttpRequest) -> HttpResponse:
     
 def product_window(request: HttpRequest, product_id: int) -> HttpResponse:
     '''
-    Представление для обработки страницы с регистрацией.
+    Представление для обработки страницы товара.
     '''
     if request.method == 'GET':
         return render(request, 'techway\\item_page.html')
+    
+def add_to_basket(request: HttpRequest, product_id: int):
+    '''
+    Представление для добавление в корзину.
+    '''
+
+    response = requests.get(f'{URL_API}add_to_basket/?id_user={request.session["id_user"]}&id_product={product_id}')
+
+    return JsonResponse({"result" : response.status_code})

@@ -42,8 +42,15 @@ class ProductList(APIView):
             list_serializer = ProductPhotoSerializer(list_photo_item, many=True).data
             list_data[item]['url_photos'] = [i['url_photo'] for i in list_serializer]
 
+            if 'iduser' in request.GET:
+                list_data[item]['favorites'] = len(Favorite.objects.filter(id_user=request.GET['iduser'], id_product=list_data[item]['idproduct'])) > 0
+                order_product = Orderproduct.objects.filter(id_product=list_data[item]['idproduct'])
+                order = Order.objects.filter(id_user=request.GET['iduser'], status='Не оформлен').first()
+                order_product = [i for i in order_product if i.id_order == order]
+                list_data[item]['basket'] = len(order_product) > 0
+            
+
         return Response(list_data)
-        # return Response(ProductSerializer(product_list, many=True).data)
 
 class AuthorizationRegistrationUser(APIView):
     def get(self, request: Request, pk = None):
@@ -91,6 +98,15 @@ class AuthorizationRegistrationUser(APIView):
         user.save()
         return Response('Пользователь удалён!')
 
+
+class AddToBasket(APIView):
+    def get(self, request: Request):
+        user = get_object_or_404(User, iduser=request.GET['id_user'])
+        order = Order.objects.get_or_create(id_user=user, status='Не оформлен')
+        order_products = Orderproduct.objects.create(id_order=order[0], id_product=Product.objects.filter(idproduct=request.GET['id_product']).first(), amount_product=1)
+        order_products.save()
+        return Response(OrderproductSerializer(order_products).data, status=status.HTTP_201_CREATED)
+    
 # class AuthRegUpdateUser(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = User.objects.all()
 #     serializer_class = UserSerializer

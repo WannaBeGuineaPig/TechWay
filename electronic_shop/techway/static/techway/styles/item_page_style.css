@@ -179,6 +179,17 @@
 }
 
 @media(max-width: 1000px){
+    .box_center div{
+        width: 40%;
+    }
+    .box_images, .box_data{
+        width: 100%;
+    }
+    .box_item{
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
     .favorite{
         width: 40px;
         height: 40px;

@@ -7,7 +7,6 @@
     {% for product in product_list %}
         <div class="card_item box_margin">
                 <div class="image_box">
-                    <!-- <img src="{% static 'techway/images/1.png' %}" alt="фото товара"> -->
                     <img src="{% static 'techway/images/photo_items/' %}{{ product.url_photos.0 }}" alt="фото товара">
                 </div>
                 <div class="info_box">
@@ -29,10 +28,20 @@
                     <p class="price_item">{{ product.price }} &#8381</p>
                     <div class="buy_favorite">
                         <div class="box_center">
-                            <a class="favorite" href="#" title="добавить в избранное">
-                                <img class="image_heart" src="{% static 'techway/images/heart.png' %}" alt="">
-                            </a>
-                            <button class="link_buy" title="добавить в корзину"><span>Купить</span></a>
+                            {% if product.favorites %}
+                                <a class="favorite" href="#" title="В избранном" onclick="addFavorite()">
+                                    <img class="image_heart" src="{% static 'techway/images/fill_heart.png' %}" alt="">
+                                </a>
+                            {% else %}
+                                <a class="favorite" href="#" title="Добавить в избранное" {% if 'id_user' in request.session %}onclick="addFavorite()"{% endif %}>
+                                    <img class="image_heart" src="{% static 'techway/images/heart.png' %}" alt="">
+                                </a>
+                            {% endif %}
+                            {% if product.basket %}
+                                <a href="{% url 'TechWay:backet' %}" class="link_buy" title="В корзине"><span>В корзине</span></a>
+                            {% else %}
+                                <button class="link_buy add_btn" title="добавить в корзину" id="{{ product.idproduct }}" {% if 'id_user' not in request.session %} disabled {% endif%}><span>Купить</span></a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
