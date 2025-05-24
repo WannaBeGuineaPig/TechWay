@@ -104,7 +104,11 @@ class AddToBasket(APIView):
     def get(self, request: Request):
         user = get_object_or_404(User, iduser=request.GET['id_user'])
         order = Order.objects.get_or_create(id_user=user, status='Не оформлен')
-        order_products = Orderproduct.objects.create(id_order=order[0], id_product=Product.objects.filter(idproduct=request.GET['id_product']).first(), amount_product=1)
+        product = Product.objects.filter(idproduct=request.GET['id_product']).first()
+        if product.amount == 0:
+            return Response({'error' : 'Товара нет в наличии!'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        order_products = Orderproduct.objects.create(id_order=order[0], id_product=product, amount_product=1)
         order_products.save()
         return Response(OrderproductSerializer(order_products).data, status=status.HTTP_201_CREATED)
     
@@ -130,12 +134,22 @@ class ShopList(generics.ListAPIView):
 
 class UpdateDataOrder(APIView):
     def post(self, request: Request):
+        
+        def change_amount_product(list_items) -> list:
+            for i  in list_items:
+                item = Product.objects.filter(idproduct=i['id_product']).first()
+                if item == None:
+                    continue
+                item.amount -= i['amount_product']
+                item.save()
+
         order = get_object_or_404(Order, id_user=get_object_or_404(User, iduser=request.POST['id_user']), status='Не оформлен')
 
         if 'status' in request.POST:
             order.status = request.POST['status']
             if request.POST['status'] == 'Оформлен':
                 order.payment_method = datetime.now()
+                change_amount_product(OrderproductSerializer(Orderproduct.objects.filter(id_order=order), many=True).data)
 
         if 'id_shop' in request.POST:
             order.id_shop = get_object_or_404(Shop, idshop=request.POST['id_shop'])
@@ -147,23 +161,74 @@ class UpdateDataOrder(APIView):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# class AuthRegUpdateUser(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
+class ChangeOrderProduct(APIView):
+    def put(self, request: Request):
+        orderproduct = Orderproduct.objects.filter(Product.objects.get(idproduct=request.PUT['id_product'])).first()
+        if orderproduct == None:
+            return Response({'error' : 'Товар не найден!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        orderproduct.amount_product -= request.PUT['amount_item']
+        orderproduct.save()
 
-# class UserList(generics.ListCreateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = ManufacturerSerializer
+        return Response(OrderproductSerializer(orderproduct).data)
 
-# class ProductList(generics.ListAPIView):
-#     queryset = Product.objects.all()
-#     serializer_class = ProductSerializer
+
+    def delete(self, request: Request):
+        order = get_object_or_404(Order, id_user=get_object_or_404(User, iduser=request.data['id_user']), status='Не оформлен') 
+        orderproduct = Orderproduct.objects.filter(id_order=order, id_product=get_object_or_404(Product, idproduct=request.data['id_product'])).first()
+        if orderproduct == None:
+            return Response({'error' : 'Товар не найден!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        orderproduct.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
-# class SubcategoryList(generics.ListAPIView):
-#     queryset = Subcategory.objects.all()
-#     serializer_class = SubcategorySerializer
+class GetProduct(APIView):
+    def get(self, request, id_product: int):
+        def create_property(property: Property):
+            type_display = property.id_type_display.name if property.id_type_display else ''
+            video_card = property.id_video_card.name if property.id_video_card else ''
+            processor = property.id_processor.name if property.id_processor else ''
+            property = PropertySerializer(property).data
+            property = {'type_display' : type_display, 'video_card' : video_card, 'processor' : processor, **property} 
+            new_property = {}
+            new_keys = {
+                "display_brightness_cd_m_2_field": 'Яркость дисплея(cd/m^2)',
+                "maximum_screen_frequency_hz_field": 'Максимальная частота(Гц)',
+                "screen_diagonal_inch_field": 'Диагональ экрана(дюйм)',
+                "ram_amount_gb_field": 'Количество оперативной памяти(гб)',
+                "internal_memory_amount_gb_field": 'Количество встроенной памяти(гб)',
+                "thickness_mm_field": 'Толщина(мм)',
+                "width_mm_field": 'Ширина(мм)',
+                "height_mm_field": 'Высота(мм)',
+                "weight_kg_field": 'Вес(кг)',
+                "type_display": 'Тип дисплея',
+                "video_card": 'Тип видеокарты',
+                "processor": 'Тип процессора'
+            }
+            check_list = ['idproperty', 'id_type_display', 'id_processor', 'id_video_card']
+            for key, value in property.items():
+                if value and key not in check_list:
+                    new_property[new_keys[key]] = value
 
+            return new_property
 
-# class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
+        product = get_object_or_404(Product, idproduct=id_product)
+        subcategory = product.id_subcategory.name
+        category = product.id_subcategory.id_category.name
+        section = product.id_subcategory.id_category.id_section.name
+        property = create_property(product.id_property)
+
+        product = ProductSerializer(product).data
+        list_photo_item = ProductPhoto.objects.filter(id_product=product['idproduct'])
+        list_serializer = ProductPhotoSerializer(list_photo_item, many=True).data
+        product = {**product, 'subcategory' : subcategory, 'category' : category, 'section' : section, 'property' : property, 'url_photos' : [i['url_photo'] for i in list_serializer]} 
+
+        if 'id_user' in request.GET:
+            product['favorites'] = len(Favorite.objects.filter(id_user=request.GET['id_user'], id_product=product['idproduct'])) > 0
+            order_product = Orderproduct.objects.filter(id_product=product['idproduct'])
+            order = Order.objects.filter(id_user=request.GET['id_user'], status='Не оформлен').first()
+            order_product = [i for i in order_product if i.id_order == order]
+            product['basket'] = len(order_product) > 0
+
+        return Response(product)

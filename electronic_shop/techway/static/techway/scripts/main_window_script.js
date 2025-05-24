@@ -27,36 +27,3 @@ $('input[type=radio]').click(function(){
         } 
     });
 });
-
-$('.add_btn').click(function(){
-    idItem = $(this).attr('id');
-    textBtn = $(this).text();
-    if(textBtn == 'В корзине') {
-        $(location).attr('href', `${BACKAPI}backet/`)
-        return;
-    }
-    $.ajax({
-        url: `${BACKAPI}add_to_basket/${idItem}`,
-        type: 'GET',
-    });
-    newViewBtnBasket(this, 'add_item', 'В корзине')
-    // $(this).text('');
-    // $(this).addClass('add_item')
-    // $(this).fadeTo("slow", 1, function(){
-    //     $(this).removeClass('add_item');
-    //     $(this).text(textBtn);
-    // });
-});
-
-function newViewBtnBasket(item, className, textBtn){
-    $(item).text('');
-    $(item).addClass(className);
-    $(item).fadeTo("slow", 1, function(){
-        $(item).removeClass(className);
-        $(item).text(textBtn);
-    });
-}
-
-function addFavorite(){
-    alert('test');
-}

@@ -1,0 +1,63 @@
+{% load static %}
+
+<div class="all_cards_favorite" id="box_cards_basket">
+    {% for item in order_product %}
+        <!-- Карточка товара -->
+            <div class="card_item box_margin" id="{{ item.product.price }}">
+                <div class="box_add_to_buket center_elements">
+                    <input type="checkbox" class="item_checkbox" name="" id="selected_item_1">
+                </div>
+                <div class="image_box">
+                    <img src="{% static 'techway/images/photo_items/' %}{{ item.product.url_photo }}" alt="фото товара">
+                </div>
+                <div class="info_box">
+                    <div class="box_data">
+                        <div>
+                            <a class="name_item" href="{% url 'TechWay:product_window' item.product.idproduct %}">{{ item.product.name }}</a>
+                        </div>
+                        <div class="box_change_count_item">
+                            <a href="#" class="link_to_chanhe_count">-</a>
+                            <p>{{ item.amount_product }}</p>
+                            <a href="#" class="link_to_chanhe_count">+</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="buy_favorite_price">
+                    <p class="price_item"><span class="item_price_id">{{ item.product.price }}</span> &#8381</p>
+                    <div class="buy_favorite">
+                        <div class="box_center">
+                            <a class="favorite" title="добавить в избранное">
+                                <img class="image_heart" src="{% static 'techway/images/heart.png' %}" alt="">
+                            </a>
+                            <a class="favorite delete_item" id="{{ item.product.idproduct }}">
+                                <svg class="image_heart" width="30" height="30" viewBox="0 0 20 20" fill="none">
+                                    <path d="M11.6663 3.125C12.0115 3.125 12.2913 2.84518 12.2913 2.5C12.2913 2.15482 12.0115 1.875 11.6663 1.875H8.33301C7.98783 1.875 7.70801 2.15482 7.70801 2.5C7.70801 2.84518 7.98783 3.125 8.33301 3.125L11.6663 3.125Z" fill="#000000"></path><path d="M17.2913 5C17.2913 5.34518 17.0115 5.625 16.6663 5.625L3.33301 5.625C2.98783 5.625 2.70801 5.34518 2.70801 5C2.70801 4.65482 2.98783 4.375 3.33301 4.375L16.6663 4.375C17.0115 4.375 17.2913 4.65482 17.2913 5Z" fill="#000000"></path><path d="M4.99967 7.70833C5.34485 7.70833 5.62467 7.98816 5.62467 8.33333V15.8333C5.62467 16.4086 6.09104 16.875 6.66634 16.875H13.333C13.9083 16.875 14.3747 16.4086 14.3747 15.8333V8.33333C14.3747 7.98816 14.6545 7.70833 14.9997 7.70833C15.3449 7.70833 15.6247 7.98816 15.6247 8.33333V15.8333C15.6247 17.099 14.5987 18.125 13.333 18.125H6.66634C5.40069 18.125 4.37467 17.099 4.37467 15.8333V8.33333C4.37467 7.98816 4.6545 7.70833 4.99967 7.70833Z" fill="#000000"></path><path d="M8.33301 9.375C8.67819 9.375 8.95801 9.65482 8.95801 10V14.1667C8.95801 14.5118 8.67819 14.7917 8.33301 14.7917C7.98783 14.7917 7.70801 14.5118 7.70801 14.1667V10C7.70801 9.65482 7.98783 9.375 8.33301 9.375Z" fill="#000000"></path><path d="M12.2913 10C12.2913 9.65482 12.0115 9.375 11.6663 9.375C11.3212 9.375 11.0413 9.65482 11.0413 10V14.1667C11.0413 14.5118 11.3212 14.7917 11.6663 14.7917C12.0115 14.7917 12.2913 14.5118 12.2913 14.1667V10Z" fill="#000000"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!--  -->
+    {% endfor %}
+</div>
+
+<script>
+    $('.delete_item').click(function(){
+    if(!confirm("Вы точно хотите удалить товар из корзины?")) return;
+    idItem = $(this).attr('id');
+    $.ajax({
+        url : `${BACKAPI}delete_item_basket/?id_product=${idItem}`,
+        type : 'GET',
+        success : function(response){
+            if(response.result){
+                $('#box_cards_basket').replaceWith(response.render_basket_list);
+                amountSummItems();
+            }
+            else {
+                alert(response.error);
+            }
+        }
+    });
+});
+</script>

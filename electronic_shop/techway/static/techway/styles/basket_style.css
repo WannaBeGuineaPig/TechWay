@@ -78,6 +78,7 @@
 }
 
 .buy_items_btn:hover{
+    cursor: pointer;
     opacity: 0.7;
     background-color: var(--first_main_color);
     border: 3px solid black;
@@ -146,7 +147,16 @@
 
 .name_item{
     color: black;
+    text-decoration: none;
     font-size: 18px;
+}
+
+.name_item:hover{
+    color: var(--first_main_color);
+}
+
+.name_item:active{
+    color: var(--second_main_color);
 }
 
 .feedback_item{
@@ -199,6 +209,7 @@
 }
 
 .favorite:hover, .favorite:hover > *{
+    cursor: pointer;
     opacity: 0.8;
 }
 
@@ -300,6 +311,10 @@
     font-size: 16px;
     min-width: 100px;
     max-width: 300px;
+}
+
+.select_data:hover{
+    cursor: pointer;
 }
 
 .select_shop, .select_payment_method{

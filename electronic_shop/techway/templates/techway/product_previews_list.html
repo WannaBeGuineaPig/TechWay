@@ -12,7 +12,7 @@
                 <div class="info_box">
                     <div class="box_data">
                         <div>
-                            <a class="name_item" href="#">{{ product.name }}</a>
+                            <a class="name_item" href="{% url 'TechWay:product_window' product.idproduct %}">{{ product.name }}</a>
                         </div>
                         <div class="feedback_item">
                             <div>
@@ -40,7 +40,7 @@
                             {% if product.basket %}
                                 <a href="{% url 'TechWay:backet' %}" class="link_buy" title="В корзине"><span>В корзине</span></a>
                             {% else %}
-                                <button class="link_buy add_btn" title="добавить в корзину" id="{{ product.idproduct }}" {% if 'id_user' not in request.session %} disabled {% endif%}><span>Купить</span></a>
+                                <button class="link_buy add_btn" title="добавить в корзину" id="{{ product.idproduct }}" {% if 'id_user' not in request.session%} disabled {% endif%}><span>Купить</span></button>
                             {% endif %}
                         </div>
                     </div>

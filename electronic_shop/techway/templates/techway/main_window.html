@@ -16,7 +16,7 @@
         <div class="container box_all_div">
             {% if product_list %}
                 <div class="box_margin">
-                    <h2 class="number_of_items_found">Найдено: {{ product_list|length }} товаров в 23 категориях</h2>
+                    <h2 class="number_of_items_found">Найдено: {{ product_list|length }} товаров в 0 категориях</h2>
                 </div>
             {% endif %}
             <div class="box_sort_link box_margin">
@@ -31,43 +31,6 @@
             {% endif %}
 
             {% include 'TechWay/product_previews_list.html' %}
-            <!-- <div class="box_margin all_cards_item">
-                <div class="box_categories">
-                    <p class="categories">Бытовая техника > Встраиваемая техника > Варочные панели</p>
-                </div>
-                <div class="card_item box_margin">
-                    <div class="image_box">
-                        <img src="{% static 'techway/images/1.png' %}" alt="фото товара">
-                    </div>
-                    <div class="info_box">
-                        <div class="box_data">
-                            <div>
-                                <a class="name_item" href="#">Беспроводные/проводные наушники GAL BH-4008 черный</a>
-                            </div>
-                            <div class="feedback_item">
-                                <div>
-                                    <p class="feedback_text"><img class="image_star" src="{% static 'techway/images/star.png' %}" alt=""> 4 | 11 отзыва(-ов)</p>
-                                </div>
-                                <div class="count_text">
-                                    <p>В наличие 1000 шт</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="buy_favorite_price">
-                        <p class="price_item">799 &#8381</p>
-                        <div class="buy_favorite">
-                            <div class="box_center">
-                                <a class="favorite" href="#" title="добавить в избранное">
-                                    <img class="image_heart" src="{% static 'techway/images/heart.png' %}" alt="">
-                                </a>
-                                <button class="link_buy" title="добавить в корзину"><span>Купить</span></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-            
             <!-- Кнопки на переход сраницы с другими товарами -->
             <div class="page_box">
                 <div class="pages">
@@ -103,6 +66,7 @@
             </section>
             <!--  -->
         </div>
+        <script src="{% static 'techway/scripts/index.js' %}" type="text/javascript"></script>
         <script src="{% static 'techway/scripts/main_window_script.js' %}"></script>
     {% endblock body %}
 </body>

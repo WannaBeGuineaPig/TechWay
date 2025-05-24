@@ -10,6 +10,8 @@ urlpatterns = [
     path('basket_list/', views.BasketList.as_view()),
     path('shop_list/', views.ShopList.as_view()),
     path('update_data_order/', views.UpdateDataOrder.as_view()),
+    path('change_order_product/', views.ChangeOrderProduct.as_view()),
+    path('get_product/<int:id_product>', views.GetProduct.as_view()),
     path('', include('rest_framework.urls', namespace='rest_framework'))
 ]
 

@@ -42,3 +42,43 @@ function newViewPrice(text){
     newText = textSpit.length == 2 ? newText + '.' + textSpit[1] : newText;
     return newText
 }
+
+function addFavorite(){
+    alert('test');
+}
+
+function deleteBtn(){
+    btn = $(this);
+    btn.unbind("click");
+    idItem = $(this).attr('id');
+    textBtn = $(this).text();
+    if(textBtn == 'В корзине') {
+        $(location).attr('href', `${BACKAPI}backet/`)
+        return;
+    }
+    
+    $.ajax({
+        url: `${BACKAPI}add_to_basket/${idItem}`,
+        type: 'GET',
+        complete : function(data){
+            if(data.responseJSON.status_code == 400) { 
+                alert(data.responseJSON.error);
+            }
+            else{
+                newViewBtnBasket(btn, 'add_item', 'В корзине');
+            }
+        }
+    });
+}
+
+function newViewBtnBasket(item, className, textBtn){
+    $(item).text('');
+    $(item).addClass(className);
+    $(item).fadeTo("slow", 1, function(){
+        $(item).removeClass(className);
+        $(item).text(textBtn);
+        $(item).bind("click", deleteBtn);
+    });
+}
+
+$('.add_btn').click(deleteBtn);

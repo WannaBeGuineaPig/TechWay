@@ -55,7 +55,7 @@
     cursor: pointer;
 }
 
-.link_buy:hover{
+.link_buy:not(.add_item):hover{
     background-color: var(--first_main_color);
     color: white;
 }
@@ -176,6 +176,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.add_item{
+    font-size: 18px;
+    background-color: green;
+}
+
+.add_item:after{
+    content: '✓';
 }
 
 @media(max-width: 1000px){

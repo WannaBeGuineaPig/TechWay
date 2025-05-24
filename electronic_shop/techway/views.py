@@ -6,7 +6,7 @@ from python_moduls.modul import *
 
 URL_API = 'http://127.0.0.1:8000/api/'
 
-def update_product_list(request: HttpRequest) -> HttpResponse:
+def update_product_list(request: HttpRequest) -> JsonResponse:
     if request.method == 'GET':
         response_product_list = requests.get(URL_API + f'product_list/?sort={request.GET["sort"]}')
         product_list = calculate_feedback_and_set_image(response_product_list.json(), 'rating_sum', 'rating_count')
@@ -136,7 +136,7 @@ def personal_account_window(request: HttpRequest) -> HttpResponse:
         else:
             return redirect('TechWay:home')
 
-def authorization_window(request: HttpRequest) -> HttpResponse:
+def authorization_window(request: HttpRequest) -> HttpResponse | JsonResponse:
     '''
     Представление для обработки страницы с авторизацией.
     '''
@@ -177,13 +177,25 @@ def product_window(request: HttpRequest, product_id: int) -> HttpResponse:
     Представление для обработки страницы товара.
     '''
     if request.method == 'GET':
-        return render(request, 'techway\\item_page.html')
+        id_user = f'?id_user={request.session["id_user"]}' if 'id_user' in request.session else ''
+        product = requests.get(f'{URL_API}get_product/{product_id}{id_user}').json()
+        product['feedback'] = round(product['rating_sum'] / product['rating_count'], 2)
+        return render(request, 'techway\\item_page.html', context={'product' : product})
     
-def add_to_basket(request: HttpRequest, product_id: int):
+def add_to_basket(request: HttpRequest, product_id: int) -> JsonResponse:
     '''
     Представление для добавление в корзину.
     '''
-
     response = requests.get(f'{URL_API}add_to_basket/?id_user={request.session["id_user"]}&id_product={product_id}')
 
-    return JsonResponse({"result" : response.status_code})
+    return JsonResponse({"status_code" : response.status_code, **response.json()})
+
+def delete_item_basket(request: HttpRequest) -> JsonResponse:
+    if request.method == 'GET':
+        delete_item = requests.delete(f'{URL_API}change_order_product/', data={'id_product' : request.GET['id_product'], 'id_user' : request.session['id_user']})
+        if delete_item.status_code == 404:
+            return JsonResponse({'result' : False, **delete_item.json()})
+        
+        order_product = requests.get(f'{URL_API}basket_list/?id_user={request.session["id_user"]}')
+        render_basket_list = render(request, 'techway\\backet_list_view.html', {'order_product' : [] if order_product.status_code == 204 else order_product.json()})
+        return JsonResponse({'result' : True, 'render_basket_list' : render_basket_list.content.decode('UTF-8')})

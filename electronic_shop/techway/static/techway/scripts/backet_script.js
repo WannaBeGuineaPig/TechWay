@@ -22,7 +22,7 @@ $('.item_checkbox').click(function() {
 //     return true;
 // }
 
-$(document).ready(function(){
+function amountSummItems(){
     $('#amount_items').text($('.card_item').length)
     
     sum_items = 0.0;
@@ -34,8 +34,13 @@ $(document).ready(function(){
     });
     // $('#sum_items').text(newViewPrice(sum_items.toString()));
     $('#sum_items').text(sum_items)
+}
+
+$(document).ready(function(){
+    amountSummItems();
 });
 
 $('#ordering_form').submit(function(){
     alert('Заказ оформлен');
 });
+
