@@ -62,10 +62,18 @@
                     </div>
                 </div>
                     
+                <h1 class="box_margin title_text">Описание</h1>
+                <div class="box_specifications box_margin">
+                    <div class="box_center_specifications">
+                        <div class="box_describe">
+                            <h3>{{ product.describe }}</h3>
+                        </div>
+                    </div>
+                </div>
+
                 <h1 class="box_margin title_text">Характеристики</h1>
                 <div class="box_specifications box_margin">
                     <div class="box_center_specifications">
-                        
                         {% for key, value in product.property.items %}
                             <div class="box_specification">
                                 <h3>{{ key }}</h3>

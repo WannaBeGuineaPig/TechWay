@@ -12,6 +12,7 @@ urlpatterns = [
     path('update_data_order/', views.UpdateDataOrder.as_view()),
     path('change_order_product/', views.ChangeOrderProduct.as_view()),
     path('get_product/<int:id_product>', views.GetProduct.as_view()),
+    path('receive_cleared_products/', views.ReceiveClearedProducts.as_view()),
     path('', include('rest_framework.urls', namespace='rest_framework'))
 ]
 

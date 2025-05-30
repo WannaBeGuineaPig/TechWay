@@ -28,8 +28,9 @@ class Color(models.Model):
 
 
 class Favorite(models.Model):
+    pk = models.CompositePrimaryKey('id_product', 'id_user')
     id_user = models.ForeignKey('User', models.DO_NOTHING, db_column='id_user')
-    id_product = models.OneToOneField('Product', models.DO_NOTHING, db_column='id_product', primary_key=True)  # The composite primary key (id_product, id_user) found, that is not supported. The first column is selected.
+    id_product = models.ForeignKey('Product', models.DO_NOTHING, db_column='id_product')
 
     class Meta:
         managed = False
@@ -52,8 +53,8 @@ class Manufacturer(models.Model):
 class Order(models.Model):
     idorder = models.AutoField(primary_key=True)
     id_user = models.ForeignKey('User', models.DO_NOTHING, db_column='id_user')
-    id_shop = models.ForeignKey('Shop', models.DO_NOTHING, blank=True, null=True, db_column='id_shop')
-    payment_method = models.CharField(blank=True, null=True, max_length=9)
+    id_shop = models.ForeignKey('Shop', models.DO_NOTHING, db_column='id_shop', blank=True, null=True)
+    payment_method = models.CharField(max_length=9, blank=True, null=True)
     status = models.CharField(max_length=15)
     date_of_regestration = models.DateTimeField(blank=True, null=True)
 
@@ -63,8 +64,8 @@ class Order(models.Model):
 
 
 class Orderproduct(models.Model):
-    id_orderproduct = models.AutoField(primary_key=True)
-    id_order = models.ForeignKey('Order', models.DO_NOTHING, db_column='id_order')
+    pk = models.CompositePrimaryKey('id_order', 'id_product')
+    id_order = models.ForeignKey(Order, models.DO_NOTHING, db_column='id_order')
     id_product = models.ForeignKey('Product', models.DO_NOTHING, db_column='id_product')
     amount_product = models.IntegerField()
 
@@ -99,6 +100,7 @@ class Product(models.Model):
     class Meta:
         managed = False
         db_table = 'product'
+
 
 class ProductPhoto(models.Model):
     idproduct_photo = models.AutoField(primary_key=True)

@@ -1,5 +1,5 @@
 URLAPI = 'http://127.0.0.1:8000/api/'
-BACKAPI = 'http://127.0.0.1:8000/'
+URLBACK = 'http://127.0.0.1:8000/'
 
 function visibility_password(id_img, id_input) {
     if($(`#${id_input}`).prop("type") == 'text'){
@@ -53,12 +53,12 @@ function deleteBtn(){
     idItem = $(this).attr('id');
     textBtn = $(this).text();
     if(textBtn == 'В корзине') {
-        $(location).attr('href', `${BACKAPI}backet/`)
+        $(location).attr('href', `${URLBACK}backet/`)
         return;
     }
     
     $.ajax({
-        url: `${BACKAPI}add_to_basket/${idItem}`,
+        url: `${URLBACK}add_to_basket/${idItem}`,
         type: 'GET',
         complete : function(data){
             if(data.responseJSON.status_code == 400) { 

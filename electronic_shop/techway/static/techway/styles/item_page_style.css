@@ -187,6 +187,13 @@
     content: '✓';
 }
 
+.box_describe{
+    padding: 2vh 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 @media(max-width: 1000px){
     .box_center div{
         width: 40%;
@@ -217,7 +224,7 @@
     .price_item{
         font-size: 1.3em;
     }
-    .box_specification h3{
+    .box_specification h3, .box_describe h3{
         font-size: 1em;
     }
 }

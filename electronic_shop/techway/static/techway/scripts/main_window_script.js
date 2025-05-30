@@ -16,7 +16,7 @@ $('input[type=radio]').click(function(){
     $('#box_product_list').css('filter', 'blur(10px)')
     let type_sort = $(this).attr('value');
     $.ajax({
-        url: `${BACKAPI}update_list_product/?sort=${type_sort}`,
+        url: `${URLBACK}update_list_product/?sort=${type_sort}`,
         type: 'GET',
         success : function (json) {
             if(json.result){

@@ -6,7 +6,6 @@ from .models import *
 from .serializers import *
 from python_moduls.modul import * 
 from django.shortcuts import get_object_or_404
-from django.forms.models import model_to_dict
 from django.db.models import F
 from datetime import datetime
 
@@ -18,8 +17,7 @@ class ProductList(APIView):
     def get(self, request: Request):
         product_list = Product.objects.all()
         
-        if 'sort' in request.GET:
-        
+        if 'sort' in request.GET:        
             match(request.GET['sort']):
                 case 'popular_first':
                     pass
@@ -57,14 +55,13 @@ class AuthorizationRegistrationUser(APIView):
     def get(self, request: Request, pk = None):
         if pk:
             user = get_object_or_404(User, iduser=pk)
-
-            return Response(model_to_dict(user))
+            return Response(UserSerializer(user).data)
 
         user = get_object_or_404(User, mail=request.GET['mail'], password=hash_password(request.GET['password']))
         if user.status == 'Удалён':
             return Response('Пользователь не найден!', status=status.HTTP_404_NOT_FOUND)
 
-        return Response(model_to_dict(user))
+        return Response(UserSerializer(user).data)
     
     def post(self, request: Request):
         serializer = UserSerializer(data=request.POST, partial=True)
@@ -91,7 +88,7 @@ class AuthorizationRegistrationUser(APIView):
         user.password = user.password if request.data['new_password'] == '' else hash_password(request.data['new_password'])
         user.phone_number = request.data['phone_number']
         user.save()
-        return Response(model_to_dict(user), status=status.HTTP_201_CREATED)
+        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
     
     def delete(self, request: Request):
         user = get_object_or_404(User, iduser=request.data['iduser'])
@@ -134,22 +131,12 @@ class ShopList(generics.ListAPIView):
 
 class UpdateDataOrder(APIView):
     def post(self, request: Request):
-        
-        def change_amount_product(list_items) -> list:
-            for i  in list_items:
-                item = Product.objects.filter(idproduct=i['id_product']).first()
-                if item == None:
-                    continue
-                item.amount -= i['amount_product']
-                item.save()
-
         order = get_object_or_404(Order, id_user=get_object_or_404(User, iduser=request.POST['id_user']), status='Не оформлен')
 
         if 'status' in request.POST:
             order.status = request.POST['status']
             if request.POST['status'] == 'Оформлен':
-                order.payment_method = datetime.now()
-                change_amount_product(OrderproductSerializer(Orderproduct.objects.filter(id_order=order), many=True).data)
+                order.date_of_regestration = datetime.now()
 
         if 'id_shop' in request.POST:
             order.id_shop = get_object_or_404(Shop, idshop=request.POST['id_shop'])
@@ -159,27 +146,39 @@ class UpdateDataOrder(APIView):
 
         order.save()
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(OrderSerializer(order).data)
 
 class ChangeOrderProduct(APIView):
     def put(self, request: Request):
-        orderproduct = Orderproduct.objects.filter(Product.objects.get(idproduct=request.PUT['id_product'])).first()
+        order = get_object_or_404(Order, id_user=get_object_or_404(User, iduser=request.data['id_user']), status='Не оформлен') 
+        product = get_object_or_404(Product, idproduct=request.data['id_product'])
+        orderproduct = Orderproduct.objects.filter(id_order=order, id_product=product).first()
+
         if orderproduct == None:
             return Response({'error' : 'Товар не найден!'}, status=status.HTTP_404_NOT_FOUND)
         
-        orderproduct.amount_product -= request.PUT['amount_item']
+        if 'amount_item' not in request.data:
+            return Response({'error' : 'Новое количества товара не найденно!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        new_amount = int(request.data['amount_item'])
+        if product.amount < new_amount:
+            return Response({'error' : 'Новое количества товара не должно превышать максимальное возможное!'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        orderproduct.amount_product = new_amount
         orderproduct.save()
 
-        return Response(OrderproductSerializer(orderproduct).data)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
     def delete(self, request: Request):
-        order = get_object_or_404(Order, id_user=get_object_or_404(User, iduser=request.data['id_user']), status='Не оформлен') 
-        orderproduct = Orderproduct.objects.filter(id_order=order, id_product=get_object_or_404(Product, idproduct=request.data['id_product'])).first()
-        if orderproduct == None:
-            return Response({'error' : 'Товар не найден!'}, status=status.HTTP_404_NOT_FOUND)
-        
-        orderproduct.delete()
+        order = get_object_or_404(Order, id_user=get_object_or_404(User, iduser=request.data['id_user']), status='Не оформлен')
+        for id_product in request.data['list_id_product'].split(' '):
+            product = get_object_or_404(Product, idproduct=id_product)
+            orderproduct = Orderproduct.objects.filter(id_order=order, id_product=product).first()
+            if orderproduct == None:
+                return Response({'error' : 'Товар не найден!'}, status=status.HTTP_404_NOT_FOUND)
+            
+            orderproduct.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
     
@@ -232,3 +231,23 @@ class GetProduct(APIView):
             product['basket'] = len(order_product) > 0
 
         return Response(product)
+    
+
+class ReceiveClearedProducts(APIView):
+    def get(self, request):
+        order = get_object_or_404(Order, idorder=request.GET['id_order'], status='Оформлен')
+        data_date = [
+            order.date_of_regestration.day if order.date_of_regestration.day > 9 else f'0{order.date_of_regestration.day}',
+            order.date_of_regestration.month if order.date_of_regestration.month > 9 else f'0{order.date_of_regestration.month}',
+            order.date_of_regestration.year,
+            order.date_of_regestration.hour if order.date_of_regestration.hour > 9 else f'0{order.date_of_regestration.hour}',
+            order.date_of_regestration.minute if order.date_of_regestration.minute > 9 else f'0{order.date_of_regestration.minute}',
+            order.date_of_regestration.second if order.date_of_regestration.second > 9 else f'0{order.date_of_regestration.second}',
+        ]
+        date_ordering = '{}-{}-{} {}:{}:{}'.format(*data_date)
+        
+        result_dict = {'id_order' : order.idorder, 'date_ordering' : date_ordering, 'list_product' : []}
+        for item in Orderproduct.objects.filter(id_order=order):
+            result_dict['list_product'].append({**ProductSerializer(item.id_product).data, 'amount' : item.amount_product})
+
+        return Response(result_dict)

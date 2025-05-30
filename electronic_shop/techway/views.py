@@ -1,14 +1,50 @@
 from django.shortcuts import render, redirect
+from django.template.loader import get_template, render_to_string
 from django.http import HttpRequest, HttpResponse, JsonResponse
-import requests, datetime as dt
+from django.core.mail import EmailMultiAlternatives, send_mail
+import requests, base64
 from python_moduls.add_product_data import *
+from python_moduls.pdf_files import *
 from python_moduls.modul import *
+from django.conf import settings
+from django.templatetags.static import static
+from email.mime.image import MIMEImage
+from email.mime.application import MIMEApplication
 
 URL_API = 'http://127.0.0.1:8000/api/'
 
+def send_to_mail(to_mail, pdf: str):
+    html_content = render_to_string('techway\\mail.html', context={'check_pdf' : pdf})
+
+    msg = EmailMultiAlternatives(
+        "Ваш чек о заказе",
+        '',
+        settings.EMAIL_HOST_USER,
+        [to_mail],
+    )
+    msg.attach_alternative(html_content, "text/html")
+
+    photo_path = f'{os.path.dirname(__file__)}{static("techway/images/logo.png")}'
+    
+    with open(photo_path, 'rb') as f:
+        image = MIMEImage(f.read())
+
+    image.add_header('Content-ID', '<logo>')
+    
+    with open(pdf, 'rb') as file:
+        content = MIMEApplication(file.read(), 'pdf', filename = 'check.pdf')
+
+    content.add_header('Content-Disposition', 'attachment', filename='check.pdf')
+    content.add_header('Content-ID', '<check>')
+
+    msg.attach(image)
+    msg.attach(content)
+
+    msg.send()
+
 def update_product_list(request: HttpRequest) -> JsonResponse:
     if request.method == 'GET':
-        response_product_list = requests.get(URL_API + f'product_list/?sort={request.GET["sort"]}')
+        response_product_list = requests.get(URL_API + f'product_list/?sort={request.GET["sort"]}&' + (f'iduser={request.session["id_user"]}' if 'id_user' in request.session else ''))
         product_list = calculate_feedback_and_set_image(response_product_list.json(), 'rating_sum', 'rating_count')
 
         render_page = render(request, 'techway\\product_previews_list.html', context={'product_list' : product_list})
@@ -21,8 +57,8 @@ def main_window(request: HttpRequest) -> HttpResponse:
     '''
     Представление для обработки главной страницы.
     '''
-    if request.method == 'GET':
-        response_product_list = requests.get(URL_API + 'product_list/' + (f'?iduser={request.session["id_user"]}' if 'id_user' in request.session else ''))
+    if request.method == 'GET':        
+        response_product_list = requests.get(URL_API + 'product_list/?' + (f'iduser={request.session["id_user"]}' if 'id_user' in request.session else ''))
         product_list = response_product_list.json()
         product_list = calculate_feedback_and_set_image(response_product_list.json(), 'rating_sum', 'rating_count')
 
@@ -86,7 +122,16 @@ def backet_window(request: HttpRequest) -> HttpResponse:
             'id_shop' : request.POST['select_shop'],
         }
 
-        requests.post(f'{URL_API}update_data_order/', data=json_data)
+        receive_order = requests.post(f'{URL_API}update_data_order/', data=json_data).json()
+
+        response = requests.get(f'{URL_API}receive_cleared_products/?id_order={receive_order["idorder"]}').json()
+        shop = requests.get(f'{URL_API}shop_list/?idshop={request.POST["select_shop"]}').json()[0]['addres']
+        
+        path_file_check = create_check_order(shop, receive_order['idorder'], method, response['date_ordering'], response['list_product'])
+        
+        email_user = requests.get(f'{URL_API}auth_reg_user/{request.session["id_user"]}').json()['mail']
+
+        send_to_mail(email_user, path_file_check)
 
         return redirect('TechWay:home')
 
@@ -192,10 +237,27 @@ def add_to_basket(request: HttpRequest, product_id: int) -> JsonResponse:
 
 def delete_item_basket(request: HttpRequest) -> JsonResponse:
     if request.method == 'GET':
-        delete_item = requests.delete(f'{URL_API}change_order_product/', data={'id_product' : request.GET['id_product'], 'id_user' : request.session['id_user']})
+        delete_item = requests.delete(f'{URL_API}change_order_product/', data={'list_id_product' : request.GET['list_id_product'], 'id_user' : request.session['id_user']})
         if delete_item.status_code == 404:
             return JsonResponse({'result' : False, **delete_item.json()})
         
         order_product = requests.get(f'{URL_API}basket_list/?id_user={request.session["id_user"]}')
         render_basket_list = render(request, 'techway\\backet_list_view.html', {'order_product' : [] if order_product.status_code == 204 else order_product.json()})
         return JsonResponse({'result' : True, 'render_basket_list' : render_basket_list.content.decode('UTF-8')})
+    
+def change_data_basket(request: HttpRequest) -> JsonResponse:
+    if request.method == 'GET':
+        id_user = request.session['id_user']
+        change_item = requests.put(f'{URL_API}change_order_product/', data={
+            'id_product' : request.GET['id_product'], 
+            'id_user' : id_user,
+            'amount_item' : request.GET['amount_item']
+        })
+
+        if change_item.status_code == 204:
+            order_product = requests.get(f'{URL_API}basket_list/?id_user={id_user}')
+            order_product = [] if order_product.status_code == 204 else order_product.json()
+            render_basket_list = render(request, 'techway\\backet_list_view.html', {'order_product' : order_product})
+            return JsonResponse({'result' : True, 'render_basket_list' : render_basket_list.content.decode('UTF-8')})
+        else:
+            return JsonResponse({'result' : False})

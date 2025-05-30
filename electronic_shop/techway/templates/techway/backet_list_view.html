@@ -3,9 +3,9 @@
 <div class="all_cards_favorite" id="box_cards_basket">
     {% for item in order_product %}
         <!-- Карточка товара -->
-            <div class="card_item box_margin" id="{{ item.product.price }}">
+            <div class="card_item box_margin" id="{{ item.product.idproduct }}">
                 <div class="box_add_to_buket center_elements">
-                    <input type="checkbox" class="item_checkbox" name="" id="selected_item_1">
+                    <input type="checkbox" class="selected_item" name="">
                 </div>
                 <div class="image_box">
                     <img src="{% static 'techway/images/photo_items/' %}{{ item.product.url_photo }}" alt="фото товара">
@@ -15,10 +15,10 @@
                         <div>
                             <a class="name_item" href="{% url 'TechWay:product_window' item.product.idproduct %}">{{ item.product.name }}</a>
                         </div>
-                        <div class="box_change_count_item">
-                            <a href="#" class="link_to_chanhe_count">-</a>
+                        <div class="box_change_count_item" id="{{ item.product.idproduct }}">
+                            <a class="link_to_change_count">-</a>
                             <p>{{ item.amount_product }}</p>
-                            <a href="#" class="link_to_chanhe_count">+</a>
+                            <a class="link_to_change_count">+</a>
                         </div>
                     </div>
                 </div>
@@ -42,22 +42,4 @@
     {% endfor %}
 </div>
 
-<script>
-    $('.delete_item').click(function(){
-    if(!confirm("Вы точно хотите удалить товар из корзины?")) return;
-    idItem = $(this).attr('id');
-    $.ajax({
-        url : `${BACKAPI}delete_item_basket/?id_product=${idItem}`,
-        type : 'GET',
-        success : function(response){
-            if(response.result){
-                $('#box_cards_basket').replaceWith(response.render_basket_list);
-                amountSummItems();
-            }
-            else {
-                alert(response.error);
-            }
-        }
-    });
-});
-</script>
+<script src="{% static 'techway/scripts/basket_list_view_script.js' %}"></script>

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+# from .models import *
 from .models import *
 
 class SectionSerializer(serializers.ModelSerializer):
@@ -12,12 +13,6 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('idcategory', 'sections', 'name')
-
-    # def to_representation(self, instance):
-    #     response = super().to_representation(instance)
-    #     response['sections'] = instance.sections.name
-
-    #     return response
         
 class ColorSerializer(serializers.ModelSerializer):
     class Meta:

@@ -116,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Yekaterinburg'
 
 USE_I18N = True
 
@@ -139,3 +139,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Session
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Application mail data
+
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+
+EMAIL_USE_TLS = True

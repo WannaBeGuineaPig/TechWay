@@ -13,5 +13,6 @@ urlpatterns = [
     path('product/<int:product_id>', views.product_window, name='product_window'),
     path('update_list_product/', views.update_product_list),
     path('add_to_basket/<int:product_id>', views.add_to_basket),
-    path('delete_item_basket/', views.delete_item_basket)
+    path('delete_item_basket/', views.delete_item_basket),
+    path('change_data_basket/', views.change_data_basket)
 ]
