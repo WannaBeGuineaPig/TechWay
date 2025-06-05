@@ -48,20 +48,11 @@ class SubcategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Subcategory
         fields = ('idsubcategory', 'id_category', 'name')
-        # fields = '__all__'
 
-class ProductSerializer(serializers.ModelSerializer):
-    # subcategory = SubcategorySerializer()
-    
+class ProductSerializer(serializers.ModelSerializer):    
     class Meta:
         model = Product
-        fields = ('idproduct', 'id_property', 'id_subcategory', 'id_manufacturer', 'id_color', 'name', 'describe', 'price', 'amount', 'rating_count', 'rating_sum')
-
-    # def to_representation(self, instance):
-    #     response = super().to_representation(instance)
-    #     response['subcategory'] = instance.subcategory.name
-
-    #     return response
+        fields = ('idproduct', 'id_property', 'id_subcategory', 'id_manufacturer', 'id_color', 'name', 'describe', 'price', 'amount', 'rating_count', 'rating_sum', 'status')
 
 class ProductPhotoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -92,7 +83,3 @@ class VideoCardSerializer(serializers.ModelSerializer):
     class Meta:
         model = VideoCard
         fields = ('idvideo_card', 'name')
-
-# class NewProductSerializer(serializers.ModelSerializer):
-#     subcategory = SubcategorySerializer(many=True)
-#     class Meta:

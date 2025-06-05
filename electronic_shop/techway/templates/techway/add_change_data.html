@@ -1,0 +1,29 @@
+{% extends 'TechWay/base_admin.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block head %}
+        <title>TechWay - Админ панель</title>
+        <link rel="stylesheet" href="{% static 'techway/styles/add_change_data_style.css' %}">
+    {% endblock head %}
+</head>
+<body>
+    {% block body %}
+        <div class="container">
+            {% if table == 'items' %}
+                <h1 class="box_margin text_align_center">{% if idproduct == -1 %}Добавить товар{% else %}Изменить товар{% endif %}</h1>
+                <p class="error_text text_align_center">{% for error in errors %}{{ error }}<br>{% endfor %}</p>
+                {% include 'TechWay/add_change_item.html' %}
+                {% else %}
+                <h1 class="box_margin text_align_center">{% if iduser == -1 %}Добавить сотрудника{% else %}Изменить сотрудника{% endif %}</h1>
+                <p class="error_text text_align_center">{% for error in errors %}{{ error }}<br>{% endfor %}</p>
+                {% include 'TechWay/add_change_employee.html' %}
+            {% endif %}
+        </div>
+    {% endblock body %}
+</body>
+</html>

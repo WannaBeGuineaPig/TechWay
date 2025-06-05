@@ -96,6 +96,7 @@ class Product(models.Model):
     amount = models.IntegerField()
     rating_count = models.FloatField()
     rating_sum = models.FloatField()
+    status = models.CharField(max_length=14)
 
     class Meta:
         managed = False
@@ -175,7 +176,7 @@ class TypeDisplay(models.Model):
 class User(models.Model):
     iduser = models.AutoField(primary_key=True)
     status = models.CharField(max_length=7)
-    position = models.CharField(max_length=9)
+    position = models.CharField(max_length=23)
     lastname = models.CharField(max_length=45)
     firstname = models.CharField(max_length=45)
     midlename = models.CharField(max_length=45, blank=True, null=True)

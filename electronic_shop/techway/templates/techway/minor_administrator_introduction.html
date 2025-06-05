@@ -1,0 +1,80 @@
+<div class="container box_margin">
+    <div class="centering_box">
+        <div class="box_selected">
+            <select class="select_data" name="" id="select_table" hidden>
+                <option value="items" selected>Товары</option>
+                <option value="orders">Заказы</option>
+            </select>
+            
+            <select class="select_data" name="" id="select_status" hidden>
+                {% if position == 'Сотрудник склада' %}
+                <option value="under_construction" selected>В стадии сборки</option>
+                <option value="transferred_to_shipping">Передан в доставку</option>
+                {% else %}
+                    <option value="ready_for_delivery" selected>Готов к выдаче</option>
+                    <option value="received">Получен</option>
+                {% endif %}
+            </select>
+            <button id="change_status" hidden>Изменить статус</button>
+        </div>
+    </div>
+
+    <div class="centering_box box_margin">
+        <table id="table_data"></table>
+    </div>
+
+</div>
+
+<script>
+    const dictStatus = {
+        'Оформлен' : 'В стадии сборки',
+        'В стадии сборки' : 'Передан в доставку',
+        'Передан в доставку' : 'Готов к выдаче',
+        'Готов к выдаче' : 'Получен',
+    }
+    function newTable(table){
+        $.ajax({
+            url : `${URLBACK}get_list_data_admin/?table=${table}`,
+            type : 'GET',
+            success : function(data){
+                $('#table_data').replaceWith(data['table_data']);
+                $('#select_table').removeAttr('hidden');
+            }
+        });
+    }
+    $(document).ready(newTable($('#select_table').find(":selected").val()));
+
+    $('#select_table').change(function(){
+        let selectedTable = $(this).find(":selected").val();
+        if(selectedTable == 'orders'){
+            $('#select_status').removeAttr('hidden');
+            $('#change_status').removeAttr('hidden');
+        }
+        else{
+            $('#select_status').attr('hidden', 'hidden');
+            $('#change_status').attr('hidden', 'hidden');
+        }
+        newTable(selectedTable);
+    });
+
+    $('#change_status').click(function(){
+        let selectStatus = $('#select_status').find(':selected').text();
+        let currentStatus = $($('.select_row').children()[4]).text();
+        if(currentStatus == ''){
+            alert('Выберете заказ для изменения статуса!');
+            return;
+        }
+        if(dictStatus[currentStatus] != selectStatus){
+            alert('Не корректный статус!');
+            return;
+        }
+        $.ajax({
+            url : `${URLBACK}update_status_order/?id_order=${$($('.select_row').children()[0]).text()}&new_status=${selectStatus}`,
+            type : 'GET',
+            success : function(data){
+                newTable($('#select_table').find(":selected").val())
+            } 
+        });
+    });
+
+</script>

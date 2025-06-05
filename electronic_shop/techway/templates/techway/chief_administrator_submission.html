@@ -1,0 +1,149 @@
+<div class="container box_margin">
+    <div class="centering_box">
+        <div class="box_selected">
+            <select class="select_data" name="" id="select_table">
+                <option value="items" selected>Товары</option>
+                <option value="orders">Заказы</option>
+                <option value="employees">Сотрудники</option>
+            </select>
+
+            <button class="action_btn" id="add_btn">Добавить</button>
+
+            <button class="action_btn" id="change_btn">Изменить</button>
+            
+            <button class="action_btn" id="delete_btn">Удалить</button>
+            
+            <div class="box_select_period" hidden>
+                <label class="text_align_center" for="start_period">Вывести начиная с: </label>
+                <input class="select_period" type="date" name="start_period" id="">
+            </div>
+            
+            <div class="box_select_period" hidden>
+                <label class="text_align_center" for="stop_period">Вывести заканчивая до: </label>
+                <input class="select_period" type="date" name="stop_period" id="">
+            </div>
+
+            <button class="action_btn" id="create_report" hidden>Сформировать отчёт</button>
+        </div>
+    </div>
+
+    <div class="centering_box box_margin">
+        <table id="table_data"></table>
+    </div>
+
+</div>
+
+<script>
+    function newTable(table){
+        $.ajax({
+            url : `${URLBACK}get_list_data_admin/?table=${table}`,
+            type : 'GET',
+            success : function(data){
+                $('#table_data').replaceWith(data['table_data']);
+            }
+        });
+    }
+    $(document).ready(newTable($('#select_table').find(":selected").val()));
+
+    $('#select_table').change(function(){
+        let selectedTable = $(this).find(":selected").val();
+        if(selectedTable == 'orders'){
+            $('.action_btn').attr('hidden', 'hidden');
+            $('#create_report, .box_select_period').removeAttr('hidden');
+            $('.select_period').toArray().forEach(element => {
+                $(element).prop('value', '')
+            });;
+        }
+        else{
+            $('.action_btn').removeAttr('hidden');
+            $('#create_report, .box_select_period').attr('hidden', 'hidden');
+        }
+        newTable(selectedTable);
+    });
+
+    $('.select_period').change(function(){
+        startPeriod = $('input[name="start_period"]').val();
+        stopPeriod = $('input[name="stop_period"]').val();
+        if(startPeriod == '' || stopPeriod == '') return;
+        if(startPeriod > stopPeriod) {
+            alert('Не корректный диапозон!');
+            return;
+        }
+        $.ajax({
+            url : `${URLBACK}get_list_data_admin/?table=orders&start_period=${startPeriod}&stop_period=${stopPeriod}`,
+            type : 'GET',
+            complete : function(data){
+                $('#table_data').replaceWith(data['responseJSON']['table_data']);
+            }
+        });
+    })
+
+    $('#create_report').click(function(){
+        startPeriod = $('input[name="start_period"]').val();
+        stopPeriod = $('input[name="stop_period"]').val();
+        if(startPeriod == '' || stopPeriod == '') {
+            alert('Для формирования отчёта нужно выбрать две даты!');
+            return;
+        }
+        if(startPeriod > stopPeriod) {
+            alert('Не корректный диапозон!');
+            return;
+        }
+        let btn = $(this);
+        btn.attr('disabled', 'disabled');
+        
+        $.ajax({
+            url : `${URLBACK}create_report_admin_panel/?start_period=${startPeriod}&stop_period=${stopPeriod}`,
+            type : 'GET',
+            complete : function(data){
+                const dataUri = `data:application/pdf;base64,${data['responseJSON']['pdf_data']}`;
+                const link = document.createElement('a');
+                link.href = dataUri;
+                link.download = 'report.pdf';
+                link.click();
+                btn.removeAttr('disabled', 'disabled');
+            }
+        });
+    });
+
+    $('#delete_btn').click(function(){
+        let id = $($('.select_row').children()[0]).text();
+        let row = $('.select_row');
+        if(id == ''){
+            alert('Выберете объект удаления!');
+            return;
+        }
+        let table = $('#select_table').find(":selected").val();
+
+        $.ajax({
+            url : `${URLBACK}delete_admin_panel/?table=${table}&id=${id}`,
+            type : 'GET',
+            complete : function(data){
+                if(table == 'employees') $(row.children()[1]).text(data['responseJSON']['new_status']);
+                else $(row.children()[10]).text(data['responseJSON']['new_status']);
+                row.removeClass('select_row');
+            }
+        });
+    });
+
+    function addChangeObject(table, id=-1){
+        $.ajax({
+            url : `${URLBACK}add_change_data/?table=${table}&id=${id}`,
+            type : 'GET',
+            complete : function(data){
+                window.location.href = data['responseJSON']['url'];
+            }
+        });
+    }
+
+    $('#add_btn').click(function(){ addChangeObject($('#select_table').find(":selected").val())});
+    $('#change_btn').click(function(){
+        let id = $($('.select_row').children()[0]).text();
+        if(id == ''){
+            alert('Выберете объект изменения!');
+            return;
+        }
+        addChangeObject($('#select_table').find(":selected").val(), id);
+    });
+
+</script>

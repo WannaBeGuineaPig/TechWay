@@ -1,0 +1,71 @@
+{% load static %}
+<form class="box_margin form_add_change_data" action="" method="post">
+    {% csrf_token %}
+    <div class="box_data">
+        <label for="id_employee">Номер сотрудника: </label>
+        <input name="id_employee" type="text" value="{{ iduser }}" readonly>
+    </div>
+    <div class="box_data">
+        <label for="mail_employee">Почта: </label>
+        <input type="text" name="mail_employee" value="{{ mail }}" pattern="^[A-Za-z0-9]{3,}[@][A-Za-z]{3,}[.][A-Za-z]+$" maxlength="255" {% if mail %} disabled {% endif %}>
+    </div>
+    
+    <div class="box_data">
+        <label for="password_employee">Пароль: </label>
+        <div class="box_input_password">
+            <input type="password" name="password_employee" value="{{ password }}" id="password_employee_id" pattern="^[A-Za-z\d]{5,}$" maxlength="100" {% if password %} disabled {% endif %} required>
+            <img src="{% static 'techway/images/show.png' %}" width="25" height="25" alt="" id="visibility_password_add_img" {% if not password %} onclick="visibility_password('visibility_password_add_img', 'password_employee_id')" {% endif %}>
+        </div>
+    </div>
+    <div class="box_data">
+        <label for="select_position">Должность: </label>
+        <select name="select_position" id="">
+            {% for i in position_list %}
+            <option value="{{ i }}" {% if i == position %}selected{% endif %}>{{ i }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="box_data">
+        <label for="select_status">Статус: </label>
+        <select name="select_status" id="">
+            {% for i in status_list %}
+            <option value="{{ i }}" {% if i == status %}selected{% endif %}>{{ i }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="box_data">
+        <label for="lastname_employee">Фамилия: </label>
+        <input name="lastname_employee" type="text" pattern="^[а-яёА-ЯЁ]{3,}$" maxlength="45" value="{{ lastname }}" required>
+    </div>
+
+    <div class="box_data">
+        <label for="firstname_employee">Имя: </label>
+        <input name="firstname_employee" type="text" pattern="^[а-яёА-ЯЁ]{3,}$" maxlength="45" value="{{ firstname }}" required>
+    </div>
+
+    <div class="box_data">
+        <label for="midlename_employee">Отчество(при наличие): </label>
+        <input name="midlename_employee" type="text" pattern="^[а-яёА-ЯЁ]{3,}$" maxlength="45" value="{{ midlename }}">
+    </div>
+    
+    <div class="box_data">
+        <label for="birthdate_employee">Дата рождения: </label>
+        <input type="date" name="birthdate_employee" value="{{ birthdate }}" required>
+    </div>
+    
+    <div class="box_data">
+        <label for="phone_number_employee">Номер телефона: </label>
+        <input name="phone_number_employee" type="text" pattern="^\d{11,}$" required maxlength="30" value="{{ phone_number }}">
+    </div>
+    
+    <div class="box_btn">
+        <button class="add_change" type="submit">{% if iduser == -1 %}Добавить{% else %}Изменить{% endif %}</button>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function(){
+        $('input[type="date"]').attr('min', maxBirthDate());
+        $('input[type="date"]').attr('max', minBirthDate());
+    });
+</script>

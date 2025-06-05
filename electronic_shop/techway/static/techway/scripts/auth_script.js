@@ -34,17 +34,14 @@ $('#form_auth').on( "submit", function( event ) {
         url : `${URLAPI}auth_reg_user/?mail=${mail}&password=${password}`,
         type : 'GET',
         success : function(data){
-            let id_user = data['iduser'];
+            let data_user = data;
             $.ajax({
                 url : currentHref, 
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': csrftoken
                 },
-                data: {
-                    'id_user': id_user
-                    
-                },
+                data: data_user,
                 success : function(response) {
                     let accountHref = currentHref.split('/');
                     accountHref[accountHref.length - 1] = response.redirect_url

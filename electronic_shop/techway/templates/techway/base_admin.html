@@ -1,0 +1,138 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'techway/styles/base_style.css' %}">
+    <link rel="icon" href="{% static 'techway/images/icon_site.svg' %}" type="image/x-icon">
+    {% block head %}{% endblock head %}
+    <style>
+        @media(max-width:1000px){
+            .title_admin_panel{
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Шапка сайта -->
+    
+    <header class="main_header">
+        <div class="info_site container">
+            <div class="main_page_box">
+                <a href="{% url 'TechWay:admin_panel' %}" class="main_page">
+                    <div class="text_main_page">
+                        <div class="logo">
+                            <div class="first_view_square">
+                                <div class="first_view_line"></div>
+                                <div class="first_view_line"></div>
+                                <div class="first_view_line"></div>
+                            </div>
+                            <div class="second_view_square">
+                                <div class="second_view_line"></div>
+                                <div class="second_view_line"></div>
+                                <div class="second_view_line"></div>
+                            </div>
+                            <div class="second_view_square">
+                                <div class="second_view_line"></div>
+                                <div class="second_view_line"></div>
+                                <div class="second_view_line"></div>
+                            </div>
+                            <div class="first_view_square">
+                                <div class="first_view_line"></div>
+                                <div class="first_view_line"></div>
+                                <div class="first_view_line"></div>
+                            </div>
+                        </div>
+                        <div class="text_logo text_align_center">TechWay</div>
+                    </div>
+                </a>
+            </div>
+            <h1 class="title_admin_panel text_align_center">Admin Panel</h1>
+            <div class="login_box">
+                <a href="{% url 'TechWay:personal_account_admin' %}" class="link_box">    
+                    <img src="{% static 'techway/images/user-interface.png' %}" alt="">
+                    <p>Кабинет</p>
+                </a>
+            </div>
+        </div>
+    </header>
+    
+    <!--  -->
+    
+    <!-- Навигация для мобильных устройств -->
+    
+    <div class="box_nav_mobile">
+        <nav class="nav_mobile">
+            <ul class="items_nav">
+                <li>
+                    <a href="{% url 'TechWay:admin_panel' %}"><img src="{% static 'techway/images/home_icon.png' %}" alt=""><div>Главная</div></a>
+                </li>
+                <li>
+                    <a href=""><img src="{% static 'techway/images/user-interface.png' %}" alt=""><div>Кабинет</div></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+    <!--  -->
+
+    <!-- Дополнение к базовой странице -->
+    <script src="{% static 'techway/scripts/jquery-3.7.1.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'techway/scripts/index.js' %}" type="text/javascript"></script>
+    {% block body %}{% endblock body %}
+    
+    <!--  -->
+
+    <!-- Подвал сайта -->
+
+    <footer class="main_footer box_margin">
+        <div class="container footer_box">
+            <a href="{% url 'TechWay:home' %}" class="main_page">
+                <div class="text_main_page">
+                    <div class="logo">
+                        <div class="first_view_square">
+                            <div class="first_view_line"></div>
+                            <div class="first_view_line"></div>
+                            <div class="first_view_line"></div>
+                        </div>
+                        <div class="second_view_square">
+                            <div class="second_view_line"></div>
+                            <div class="second_view_line"></div>
+                            <div class="second_view_line"></div>
+                        </div>
+                        <div class="second_view_square">
+                            <div class="second_view_line"></div>
+                            <div class="second_view_line"></div>
+                            <div class="second_view_line"></div>
+                        </div>
+                        <div class="first_view_square">
+                            <div class="first_view_line"></div>
+                            <div class="first_view_line"></div>
+                            <div class="first_view_line"></div>
+                        </div>
+                    </div>
+                    <div class="text_logo text_align_center">TechWay</div>
+                </div>
+            </a>
+            <nav class="nav_footer">
+                <ul class="nav_table">
+                    <li><a href="{% url 'TechWay:admin_panel' %}">Главная</a></li>
+                    <li><h1 class="title_admin_panel text_align_center">Admin Panel</h1></li>
+                    <li><a href="{% url 'TechWay:personal_account_admin' %}">Кабинет</a></li>
+                </ul>
+            </nav>
+            <div class="contact_information">
+                <h4>Контактная информация</h4>
+                <p>Горячая линия: <a href="tel:89631408360" class="contact_information_link" target="_blank">7(963)140-83-60</a>
+                <br>Электронная почта: <a href="mailto:LoginProject@yandex.ru" class="contact_information_link" target="_blank">LoginProject@yandex.ru</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!--  -->
+</body>
+</html>

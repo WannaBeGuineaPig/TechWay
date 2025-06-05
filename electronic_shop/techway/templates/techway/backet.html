@@ -63,6 +63,11 @@
                     <button class="buy_items_btn" id="selected_all_items_btn">Удалить выбранные</button>
                 </div>
             </div>
+            {% if error %}
+                <div class="box_error box_margin">
+                    <p class="error_text text_align_center">{{ error }}</p>
+                </div>
+            {% endif %}
             {% include 'TechWay/backet_list_view.html' %}
         </div>
     </div>

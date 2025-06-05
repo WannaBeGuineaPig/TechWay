@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
-from django.template.loader import get_template, render_to_string
-from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.core.mail import EmailMultiAlternatives, send_mail
 import requests, base64
+from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.core.mail import EmailMultiAlternatives
 from python_moduls.add_product_data import *
 from python_moduls.pdf_files import *
 from python_moduls.modul import *
@@ -40,7 +40,14 @@ def send_to_mail(to_mail, pdf: str):
     msg.attach(image)
     msg.attach(content)
 
-    msg.send()
+    try:
+        msg.send()
+    except:
+        pass
+
+def check_to_admin(id_user: int) -> bool:
+    position = requests.get(f'{URL_API}auth_reg_user/{id_user}').json()['position']
+    return position != 'Клиент'
 
 def update_product_list(request: HttpRequest) -> JsonResponse:
     if request.method == 'GET':
@@ -53,25 +60,32 @@ def update_product_list(request: HttpRequest) -> JsonResponse:
             'product_list_page' : render_page.content.decode("utf-8")
         })
     
-def main_window(request: HttpRequest) -> HttpResponse:
+def main_view(request: HttpRequest) -> HttpResponse:
     '''
     Представление для обработки главной страницы.
     '''
-    if request.method == 'GET':        
+
+    if 'id_user' in request.session and check_to_admin(request.session['id_user']):
+        return redirect('TechWay:admin_panel')
+    
+    if request.method == 'GET':
         response_product_list = requests.get(URL_API + 'product_list/?' + (f'iduser={request.session["id_user"]}' if 'id_user' in request.session else ''))
         product_list = response_product_list.json()
         product_list = calculate_feedback_and_set_image(response_product_list.json(), 'rating_sum', 'rating_count')
 
         return render(request, 'techway\\main_window.html', context={'product_list' : product_list})
 
-def catalog_window(request: HttpRequest) -> HttpResponse:
+def catalog_view(request: HttpRequest) -> HttpResponse:
     '''
     Представление для обработки страницы с каталогом.
     '''
+    if 'id_user' in request.session and check_to_admin(request.session['id_user']):
+        return redirect('TechWay:admin_panel')
+    
     if request.method == 'GET':
         return render(request, 'techway\\catalog.html')
 
-def favorite_window(request: HttpRequest) -> HttpResponse:
+def favorite_view(request: HttpRequest) -> HttpResponse:
     '''
     Представление для обработки страницы с избранным.
     '''
@@ -79,15 +93,18 @@ def favorite_window(request: HttpRequest) -> HttpResponse:
     if 'id_user' not in request.session:
         return redirect('TechWay:home')
 
+    if check_to_admin(request.session['id_user']):
+        return redirect('TechWay:admin_panel')
+
     if request.method == 'GET':
         return render(request, 'techway\\favorite.html')
 
-def backet_window(request: HttpRequest) -> HttpResponse:
+def backet_view(request: HttpRequest) -> HttpResponse:
     '''
     Представление для обработки страницы с корзиной.
     '''
     
-    if 'id_user' not in request.session:
+    if 'id_user' not in request.session or check_to_admin(request.session['id_user']):
         return redirect('TechWay:home')
 
     if request.method == 'GET':
@@ -122,8 +139,23 @@ def backet_window(request: HttpRequest) -> HttpResponse:
             'id_shop' : request.POST['select_shop'],
         }
 
-        receive_order = requests.post(f'{URL_API}update_data_order/', data=json_data).json()
+        receive_order = requests.post(f'{URL_API}update_data_order/', data=json_data)
 
+        if receive_order.status_code == 400:
+            order_product = requests.get(f'{URL_API}basket_list/?id_user={request.session["id_user"]}')
+            shop_list = requests.get(f'{URL_API}shop_list/')
+            payment_method_list = [
+                {'id_payment_method' : 1, 'method' : 'Наличными'},
+                {'id_payment_method' : 2, 'method' : 'Картой'}
+            ]
+            return render(request, 'techway\\backet.html', context={
+                'order_product': [] if order_product.status_code == 204 else order_product.json(),
+                'shop_list' : shop_list.json(),
+                'payment_method_list' : payment_method_list,
+                **receive_order.json()
+            })
+
+        receive_order = receive_order.json()
         response = requests.get(f'{URL_API}receive_cleared_products/?id_order={receive_order["idorder"]}').json()
         shop = requests.get(f'{URL_API}shop_list/?idshop={request.POST["select_shop"]}').json()[0]['addres']
         
@@ -133,15 +165,20 @@ def backet_window(request: HttpRequest) -> HttpResponse:
 
         send_to_mail(email_user, path_file_check)
 
+        delete_pdf_file()
+
         return redirect('TechWay:home')
 
-def personal_account_window(request: HttpRequest) -> HttpResponse:
+def personal_account_view(request: HttpRequest) -> HttpResponse:
     '''
     Представление для обработки страницы с личным кабинетом.
     '''
 
     if 'id_user' not in request.session:
         return redirect('TechWay:home')
+    
+    if check_to_admin(request.session['id_user']):
+        return redirect('TechWay:admin_panel')
     
     if request.method == 'GET':
         user_dict = requests.get(URL_API + f'auth_reg_user/{request.session["id_user"]}').json()
@@ -181,21 +218,29 @@ def personal_account_window(request: HttpRequest) -> HttpResponse:
         else:
             return redirect('TechWay:home')
 
-def authorization_window(request: HttpRequest) -> HttpResponse | JsonResponse:
+def authorization_view(request: HttpRequest) -> HttpResponse | JsonResponse:
     '''
     Представление для обработки страницы с авторизацией.
     '''
+
+    if 'id_user' in request.session:
+        return redirect('TechWay:home')
+
     if request.method == 'GET':
         return render(request, 'techway\\authorization.html')
     
     else:
-        request.session['id_user'] = request.POST['id_user']
-        return JsonResponse({"redirect_url" : redirect('TechWay:personal_account').url})
+        request.session['id_user'] = request.POST['iduser']
+        url = redirect('TechWay:personal_account').url if request.POST['position'] == 'Клиент' else redirect('TechWay:admin_panel').url
+        return JsonResponse({"redirect_url" : url})
 
-def registration_window(request: HttpRequest) -> HttpResponse:
+def registration_view(request: HttpRequest) -> HttpResponse:
     '''
     Представление для обработки страницы с регистрацией.
     '''
+    if 'id_user' in request.session:
+        return redirect('TechWay:home')
+    
     if request.method == 'GET':
         return render(request, 'techway\\registration.html')
     
@@ -217,10 +262,13 @@ def registration_window(request: HttpRequest) -> HttpResponse:
     
         return redirect('TechWay:auth')
     
-def product_window(request: HttpRequest, product_id: int) -> HttpResponse:
+def product_view(request: HttpRequest, product_id: int) -> HttpResponse:
     '''
     Представление для обработки страницы товара.
     '''
+    if 'id_user' in request.session and check_to_admin(request.session['id_user']):
+        return redirect('TechWay:admin_panel')
+    
     if request.method == 'GET':
         id_user = f'?id_user={request.session["id_user"]}' if 'id_user' in request.session else ''
         product = requests.get(f'{URL_API}get_product/{product_id}{id_user}').json()
@@ -261,3 +309,211 @@ def change_data_basket(request: HttpRequest) -> JsonResponse:
             return JsonResponse({'result' : True, 'render_basket_list' : render_basket_list.content.decode('UTF-8')})
         else:
             return JsonResponse({'result' : False})
+        
+
+def admin_panel_view(request: HttpRequest):
+    if 'id_user' not in request.session or not check_to_admin(request.session['id_user']):
+        return redirect('TechWay:home')
+    
+    if request.method == 'GET':
+        admin = requests.get(f'{URL_API}auth_reg_user/{request.session["id_user"]}').json()
+        return render(request, 'techway\\admin_page.html', context={'position' : admin['position']})
+    
+
+def get_list_data_admin(request: HttpRequest) -> JsonResponse:
+    if request.method == 'GET':
+        list_items = []
+        match request.GET['table']:
+            case 'items':
+                list_items = requests.get(f'{URL_API}product_list_admin_panel/').json()
+
+            case 'orders':
+                if 'start_period' in request.GET and 'stop_period' in request.GET:
+                    list_items = requests.get(f'{URL_API}order_list_admin_panel/?start_period={request.GET["start_period"]}&stop_period={request.GET["stop_period"]}').json()
+                else:
+                    list_items = requests.get(f'{URL_API}order_list_admin_panel/').json()
+            
+            case 'employees':
+                list_items = requests.get(f'{URL_API}employee_list_admin_panel/?id_user={request.session["id_user"]}').json()
+
+        return JsonResponse({'table_data' : render(request, 'techway\\table_data_admin_panel.html', context={'list_items' : list_items}).content.decode()})
+    
+def update_status_order(request: HttpRequest) -> JsonResponse:
+    if request.method == 'GET':
+        requests.post(f'{URL_API}update_status_order_admin_panel/', {
+            'status' : request.GET['new_status'],
+            'id_order' : request.GET['id_order'],
+        })
+        return JsonResponse({'result' : True})
+
+
+def personal_account_admin_view(request: HttpRequest) -> HttpResponse:
+    '''
+    Представление для обработки страницы с личным кабинетом.
+    '''
+
+    if 'id_user' not in request.session or not check_to_admin(request.session['id_user']):
+        return redirect('TechWay:home')
+    
+    if request.method == 'GET':
+        user_dict = requests.get(URL_API + f'auth_reg_user/{request.session["id_user"]}').json()
+        new_type_birthdate = user_dict['birthdate'].split('T')[0]
+        user_dict.setdefault('new_type_birthdate', new_type_birthdate)
+        return render(request, 'techway\\personal_account_admin.html', context=user_dict)
+    
+    else:
+        if 'btn' in request.POST and request.POST['btn'] == 'Выйти из аккаунта':
+            request.session.pop('id_user')
+            return redirect('TechWay:admin_panel')
+        
+        elif 'btn' in request.POST and request.POST['btn'] == 'Изменить':
+            json_data = {
+                'iduser': request.session['id_user'],
+                'mail': request.POST['input_mail'],
+                'lastname': request.POST['input_last_name'],
+                'firstname': request.POST['input_first_name'],
+                'midlename': request.POST['input_midle_name'],
+                'birthdate': request.POST['input_birthdate'],
+                'phone_number': request.POST['input_phone_number'],
+                'password': request.POST['input_password'],
+                'new_password': request.POST['input_password_update'],
+            }
+            user = requests.put(URL_API + 'auth_reg_user/', data=json_data)
+            json_data.setdefault('new_type_birthdate', json_data['birthdate'].split('T')[0])    
+            json_data.setdefault('error', user.content.decode('UTF-8')) if user.status_code == 409 else json_data.setdefault('complete', 'Данные успешно изменены!') 
+                
+            return render(request, 'techway\\personal_account_admin.html', context=json_data)
+                
+        elif 'btn' in request.POST and request.POST['btn'] == 'Удалить аккаунт':
+            requests.delete(URL_API + 'auth_reg_user/', data={'iduser': request.session['id_user']})
+            request.session.pop('id_user')
+            return redirect('TechWay:admin_panel')
+
+        else:
+            return redirect('TechWay:admin_panel')
+        
+def create_report_admin_panel(request: HttpRequest) -> JsonResponse:
+    if request.method == 'GET':
+        start_period = request.GET['start_period']
+        stop_period = request.GET['stop_period']
+        all_sum, items = requests.get(f'{URL_API}list_for_report_admin_panel/?start_period={start_period}&stop_period={stop_period}').json().values()
+        path_file = create_report(start_period, stop_period, all_sum, items)
+        pdf_data = ''
+        with open(path_file, 'rb') as pdf_file:
+            pdf_data = pdf_file.read()
+
+        return JsonResponse({'pdf_data' : base64.b64encode(pdf_data).decode('utf-8')})
+    
+def delete_admin_panel(request: HttpRequest) -> JsonResponse:
+    if request.method == 'GET':
+        if request.GET['table'] == 'items':
+            response = requests.get(f'{URL_API}update_status_item_admin_panel/?id_item={request.GET["id"]}&status=Снят с продажи')
+            
+        else:
+            response = requests.get(f'{URL_API}update_status_employee_admin_panel/?id_employee={request.GET["id"]}&status=Удалён')
+
+        return JsonResponse({'new_status' : response.json()['status']})
+
+def add_change_data(request: HttpRequest) -> JsonResponse:
+    if request.method == 'GET':
+        request.session['table'] = request.GET['table']
+        request.session['id'] = request.GET["id"]
+
+        return JsonResponse({'url' : redirect('TechWay:add_change').url})
+
+def add_change_data_view(request: HttpRequest) -> JsonResponse:
+    if request.method == 'GET':
+        table = request.session['table']
+        id = request.session['id']
+        if table == 'items':
+            data = {
+                **requests.get(f'{URL_API}get_set_data_product/?id_product={id}').json(),
+                'subcategory_list' : requests.get(f'{URL_API}subcategory_list/').json(),
+                'manufacturer_list' : requests.get(f'{URL_API}manufacturer_list/').json(),
+                'color_list' : requests.get(f'{URL_API}color_list/').json(),
+                'type_display_list' : requests.get(f'{URL_API}type_display_list/').json(),
+                'video_card_list' : requests.get(f'{URL_API}video_card_list/').json(),
+                'processor_list' : requests.get(f'{URL_API}processor_list/').json(),
+            }
+
+        else:
+            data = requests.get(f'{URL_API}get_set_data_employee/?id_employee={id}').json()
+        
+        return render(request, 'techway\\add_change_data.html', context={**data, 'table' : table})
+
+    else:
+        if request.session['table'] == 'items':
+            response = requests.post(f'{URL_API}get_set_data_product/', data={
+                'id_product' : request.POST['id_item'],
+                'id_subcategory' : request.POST['select_subcategory'],
+                'id_manufacturer' : request.POST['select_manufacturer'],
+                'id_color' : request.POST['select_color'],
+                'name' : request.POST['name_item'],
+                'describe' : request.POST['describe_item'],
+                'amount' : request.POST['amount_item'],
+                'price' : request.POST['price_item'],
+                'status' : request.POST['select_status'],
+                'id_type_display' : request.POST['select_type_display'],
+                'id_video_card' : request.POST['select_video_card'],
+                'id_processor' : request.POST['select_processor'],
+                'display_brightness' : request.POST['display_brightness'],
+                'maximum_screen' : request.POST['maximum_screen'],
+                'screen_diagonal' : request.POST['screen_diagonal'],
+                'ram_memory' : request.POST['ram_amount'],
+                'internal_memory' : request.POST['internal_memory'],
+                'thickness' : request.POST['thickness'],
+                'width' : request.POST['width'],
+                'height' : request.POST['height'],
+                'weight' : request.POST['weight'],
+            })
+
+        else:
+            data = {
+                'iduser' : request.POST['id_employee'],
+                'status' : request.POST['select_status'],
+                'position' : request.POST['select_position'],
+                'lastname' : request.POST['lastname_employee'],
+                'firstname' : request.POST['firstname_employee'],
+                'midlename' : request.POST['midlename_employee'],
+                'birthdate' : request.POST['birthdate_employee'],
+                'phone_number' : request.POST['phone_number_employee'],
+            }
+            if 'mail_employee' in request.POST and 'password_employee' in request.POST:
+                data = {
+                    **data, 
+                    'mail' : request.POST['mail_employee'],
+                    'password' : request.POST['password_employee'],
+                }
+            response = requests.post(f'{URL_API}get_set_data_employee/', data=data)
+
+        if response.status_code == 409:
+            if request.session['table'] == 'items':
+                data = {
+                    **requests.get(f'{URL_API}get_set_data_product/?id_product={request.session["id"]}').json(),
+                    'subcategory_list' : requests.get(f'{URL_API}subcategory_list/').json(),
+                    'manufacturer_list' : requests.get(f'{URL_API}manufacturer_list/').json(),
+                    'color_list' : requests.get(f'{URL_API}color_list/').json(),
+                }
+                data['id_subcategory'] = int(request.POST['select_subcategory'])
+                data['id_manufacturer'] = int(request.POST['select_manufacturer'])
+                data['id_color'] = int(request.POST['select_color'])
+                data['name'] = request.POST['name_item']
+                data['describe'] = request.POST['describe_item']
+                data['amount'] = request.POST['amount_item']
+                data['price'] = request.POST['price_item']
+                data['status'] = request.POST['select_status']
+            else:
+                data = requests.get(f'{URL_API}get_set_data_employee/?id_employee={request.session["id"]}').json()
+                data['status'] = request.POST['select_status']
+                data['position'] = request.POST['select_position']
+                data['lastname'] = request.POST['lastname_employee']
+                data['firstname'] = request.POST['firstname_employee']
+                data['midlename'] = request.POST['midlename_employee']
+                data['birthdate'] = request.POST['birthdate_employee']
+                data['phone_number'] = request.POST['phone_number_employee']
+
+            return render(request, 'techway\\add_change_data.html', context={**data, 'table' : request.session['table'], 'errors' : [f'{translate_text(i).capitalize()}: {translate_text(response.json()[i][0]).lower()}' for i in response.json()]})
+
+        request.session.pop('table')
+        request.session.pop('id')
+        return redirect('TechWay:admin_panel')

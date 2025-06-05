@@ -82,3 +82,16 @@ function newViewBtnBasket(item, className, textBtn){
 }
 
 $('.add_btn').click(deleteBtn);
+
+
+function minBirthDate(){
+    let dateNow = new Date();
+    dateNow.setFullYear(dateNow.getFullYear() -18);
+    return `${dateNow.getFullYear()}-${dateNow.getMonth() > 9 ? dateNow.getMonth() : `0${dateNow.getMonth()}`}-${dateNow.getDate() > 9 ? dateNow.getDate() : `0${dateNow.getDate()}`}`;
+}
+
+function maxBirthDate(){
+    let dateNow = new Date();
+    dateNow.setFullYear(dateNow.getFullYear() - 100);
+    return `${dateNow.getFullYear()}-${dateNow.getMonth() > 9 ? dateNow.getMonth() : `0${dateNow.getMonth()}`}-${dateNow.getDate() > 9 ? dateNow.getDate() : `0${dateNow.getDate()}`}`;
+}

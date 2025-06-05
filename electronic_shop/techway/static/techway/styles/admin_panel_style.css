@@ -1,0 +1,88 @@
+.centering_box{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.box_selected{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.select_data, #change_status, .action_btn, .select_period{
+    width: 150px;
+    height: 30px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+#table_data, #table_data *{
+    border: 1px solid black;
+    border-collapse: collapse;
+    border-spacing: 10px;
+    text-align: center;
+    user-select: none;
+}
+
+#table_data th, #table_data td{
+    padding: 10px;
+}
+
+.row_body:hover{
+    background-color: rgb(222, 222, 222);
+}
+
+.row_body:active{
+    background-color: rgb(200, 200, 200);
+}
+
+#change_status, .select_data, .action_btn{
+    user-select: none;
+}
+
+#change_status, .action_btn{
+    background-color: transparent;
+    border: 1px solid black;
+}
+
+#change_status:hover, .action_btn:hover{
+    background-color: var(--first_main_color);
+    border: 2px solid black;
+}
+
+#change_status:active, .action_btn:active{
+    background-color: var(--second_main_color);
+    border: 3px solid black;
+}
+
+.select_row{
+    background-color: rgb(200, 200, 200);
+    border: 2px solid black;
+}
+
+.select_period{
+    font-size: 16px;
+}
+
+.box_select_period label{
+    margin-right: 1vw;
+}
+
+.form_data{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+@media(max-width:1000px){
+    .select_data, #change_status, .action_btn{
+        max-width: 100px;
+        font-size: 12px;
+    }
+    .box_selected{
+        width: 80%;
+    }
+}

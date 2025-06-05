@@ -1,0 +1,29 @@
+<table id="table_data">
+    <thead>
+        <tr>
+            {% for column in list_items.0.keys %}
+                <th>{{ column }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in list_items %}
+            <tr class="row_body">
+                {% for value in item.values %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    $('.row_body').click(function(){
+        if($('.select_row').text() == $(this).text()){
+            $('.select_row').removeClass('select_row');
+            return;
+        }
+        $('.select_row').removeClass('select_row');
+        $(this).addClass('select_row');
+    });
+</script>

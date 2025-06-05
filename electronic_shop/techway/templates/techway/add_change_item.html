@@ -1,0 +1,121 @@
+<form class="box_margin form_add_change_data" action="" method="post">
+    {% csrf_token %}
+    <div class="box_data">
+        <label for="id_item">Номер товара: </label>
+        <input name="id_item" type="text" value="{{ idproduct }}" readonly>
+    </div>
+    <div class="box_data">
+        <label for="select_subcategory">Подкатегория: </label>
+        <select name="select_subcategory" id="">
+            {% for i in subcategory_list %}
+            <option value="{{ i.idsubcategory }}" {% if i.idsubcategory == id_subcategory %}selected{% endif %}>{{ i.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="box_data">
+        <label for="select_manufacturer">Поставщик: </label>
+        <select name="select_manufacturer" id="">
+            {% for i in manufacturer_list %}
+            <option value="{{ i.idmanufacturer }}" {% if i.idmanufacturer == id_manufacturer %}selected{% endif %}>{{ i.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="box_data">
+        <label for="select_color">Цвет: </label>
+        <select name="select_color" id="">
+            {% for i in color_list %}
+            <option value="{{ i.idcolor }}" {% if i.idcolor == id_color %}selected{% endif %}>{{ i.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+        <div class="box_data">
+        <label for="select_status">Статус: </label>
+        <select name="select_status" id="">
+            {% for i in status_list %}
+            <option value="{{ i }}" {% if i == status %}selected{% endif %}>{{ i }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="box_data">
+        <label for="select_type_display">Тип дисплея: {{ idtype_display }}</label>
+        <select name="select_type_display" id="">
+            <option value="-1">Нет</option>
+            {% for i in type_display_list %}
+            <option value="{{ i.idtype_display }}" {% if i.idtype_display == id_type_display %}selected{% endif %}>{{ i.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="box_data">
+        <label for="select_video_card">Видеокарта: </label>
+        <select name="select_video_card" id="">
+            <option value="-1">Нет</option>
+            {% for i in video_card_list %}
+            <option value="{{ i.idvideo_card }}" {% if i.idvideo_card == id_video_card %}selected{% endif %}>{{ i.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="box_data">
+        <label for="select_processor">Процессор: </label>
+        <select name="select_processor" id="">
+            <option value="-1">Нет</option>
+            {% for i in processor_list %}
+            <option value="{{ i.idprocessor }}" {% if i.idprocessor == id_processor %}selected{% endif %}>{{ i.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="box_data">
+        <label for="name_item">Название: </label>
+        <input name="name_item" type="text" value="{{ name }}" maxlength="100" required>
+    </div>
+    <div class="box_data">
+        <label for="describe_item">Описание: </label>
+        <textarea name="describe_item" required>{{ describe }}</textarea>
+    </div>
+    <div class="box_data">
+        <label for="display_brightness">Яркость экрана(кд/м<sup>2</sup>): </label>
+        <input name="display_brightness" type="number" value="{{ display_brightness_cd_m_2_field }}">
+    </div>
+    <div class="box_data">
+        <label for="maximum_screen">Максимальная частота экрана(Гц): </label>
+        <input name="maximum_screen" type="number" value="{{ maximum_screen_frequency_hz_field }}">
+    </div>
+    <div class="box_data">
+        <label for="screen_diagonal">Диагональ экрана(дюйм): </label>
+        <input name="screen_diagonal" type="number" value="{{ screen_diagonal_inch_field }}">
+    </div>
+    <div class="box_data">
+        <label for="ram_amount">Количество оперативной памяти(гб): </label>
+        <input name="ram_amount" type="number" value="{{ ram_amount_gb_field }}">
+    </div>
+    <div class="box_data">
+        <label for="internal_memory">Количество встроенной памяти(гб): </label>
+        <input name="internal_memory" type="number" value="{{ internal_memory_amount_gb_field }}">
+    </div>
+    <div class="box_data">
+        <label for="thickness">Толщина(мм): </label>
+        <input name="thickness" type="number" value="{{ thickness_mm_field }}">
+    </div>
+    <div class="box_data">
+        <label for="width">Ширина(мм): </label>
+        <input name="width" type="number" value="{{ width_mm_field }}">
+    </div>
+    <div class="box_data">
+        <label for="height">Высота(мм): </label>
+        <input name="height" type="number" value="{{ height_mm_field }}">
+    </div>
+    <div class="box_data">
+        <label for="weight">Вес(кг): </label>
+        <input name="weight" type="number" value="{{ weight_kg_field }}">
+    </div>
+    <div class="box_data">
+        <label for="price_item">Цена: </label>
+        <input name="price_item" type="number" value="{{ price }}" required>
+    </div>
+    <div class="box_data">
+        <label for="amount_item">Количество: </label>
+        <input name="amount_item" type="number" value="{{ amount }}" required>
+    </div>
+    <div class="box_btn">
+        <button class="add_change" type="submit">{% if idproduct == -1 %}Добавить{% else %}Изменить{% endif %}</button>
+    </div>
+</form>

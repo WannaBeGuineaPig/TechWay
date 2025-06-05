@@ -1,4 +1,4 @@
-{% extends 'TechWay/base.html' %}
+{% extends 'TechWay/base_admin.html' %}
 {% load static %}
 
 <!DOCTYPE html>
@@ -7,13 +7,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% block head %}
-        <title>TechWay - </title>
-        <link rel="stylesheet" href="{% static 'techway/styles/main_window_style.css' %}">
+        <title>TechWay - Админ панель</title>
+        <link rel="stylesheet" href="{% static 'techway/styles/admin_panel_style.css' %}">
     {% endblock head %}
 </head>
 <body>
     {% block body %}
-        
+        {% if position == 'Администратор' %}
+            {% include 'techway/chief_administrator_submission.html' %}
+        {% else %}
+            {% include 'techway/minor_administrator_introduction.html' %}
+        {% endif %}
     {% endblock body %}
 </body>
 </html>
