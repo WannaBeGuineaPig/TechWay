@@ -6,6 +6,7 @@ urlpatterns = [
     path('shop_list/', views.ShopList.as_view()),
     path('order_list/', views.OrderList.as_view()),
     path('subcategory_list/', views.SubcategoryList.as_view()),
+    path('section_list/', views.SectionList.as_view()),
     path('manufacturer_list/', views.ManufacturerList.as_view()),
     path('color_list/', views.ColorList.as_view()),
     path('type_display_list/', views.TypeDisplayList.as_view()),
@@ -31,6 +32,9 @@ urlpatterns = [
     path('get_set_data_employee/', views.GetSetDataEmployee.as_view()),
     path('history_order_user/', views.HistoryOrderUser.as_view()),
     path('order_product_for_check/', views.OrderProductForCheck.as_view()),
+    path('category_list_catalog/', views.CategoryListCatalog.as_view()),
+    path('subcategory_list_catalog/', views.SubcategoryListCatalog.as_view()),
+    path('categoty_section/', views.CategotySection.as_view()),
     path('', include('rest_framework.urls', namespace='rest_framework'))
 ]
 

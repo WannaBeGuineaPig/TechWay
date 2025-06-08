@@ -5,14 +5,14 @@ from .models import *
 class SectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Section
-        fields = ('idsection', 'name')
+        fields = ('idsection', 'name', 'path_image')
 
 class CategorySerializer(serializers.ModelSerializer):
-    sections = SectionSerializer(read_only=True, source='section.name')
+    id_section = SectionSerializer(read_only=True, source='section.name')
     
     class Meta:
         model = Category
-        fields = ('idcategory', 'sections', 'name')
+        fields = ('idcategory', 'id_section', 'name', 'path_image')
         
 class ColorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,7 +47,7 @@ class ProcessorSerializer(serializers.ModelSerializer):
 class SubcategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Subcategory
-        fields = ('idsubcategory', 'id_category', 'name')
+        fields = ('idsubcategory', 'id_category', 'name', 'path_image')
 
 class ProductSerializer(serializers.ModelSerializer):    
     class Meta:

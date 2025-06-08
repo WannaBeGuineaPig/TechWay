@@ -12,6 +12,7 @@ class Category(models.Model):
     idcategory = models.IntegerField(primary_key=True)
     id_section = models.ForeignKey('Section', models.DO_NOTHING, db_column='id_section')
     name = models.CharField(max_length=45)
+    path_image = models.TextField()
 
     class Meta:
         managed = False
@@ -136,6 +137,7 @@ class Property(models.Model):
 class Section(models.Model):
     idsection = models.AutoField(primary_key=True)
     name = models.CharField(max_length=45)
+    path_image = models.TextField()
 
     class Meta:
         managed = False
@@ -158,6 +160,7 @@ class Subcategory(models.Model):
     idsubcategory = models.AutoField(primary_key=True)
     id_category = models.ForeignKey(Category, models.DO_NOTHING, db_column='id_category')
     name = models.CharField(max_length=45)
+    path_image = models.TextField()
 
     class Meta:
         managed = False

@@ -16,7 +16,7 @@
         <div class="container box_all_div">
             {% if product_list %}
                 <div class="box_margin">
-                    <h2 class="number_of_items_found">Найдено: {{ product_list|length }} товаров в 0 категориях</h2>
+                    <h2 class="number_of_items_found">Найдено: {{ product_list|length }} товаров</h2>
                 </div>
             {% endif %}
             <div class="box_sort_link box_margin">
@@ -26,7 +26,7 @@
             {% if categories %}
                 <div class="box_margin box_categories">
                     <!-- <p class="categories">Бытовая техника > Встраиваемая техника > Варочные панели</p> -->
-                    <p class="categories">categories[0] > categories[1] > categories[2]</p>
+                    <p class="categories">{{ categories|join:" > " }}</p>
                 </div>
             {% endif %}
 

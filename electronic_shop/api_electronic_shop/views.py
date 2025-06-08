@@ -29,6 +29,10 @@ class SubcategoryList(generics.ListAPIView):
     queryset = Subcategory.objects.all()
     serializer_class = SubcategorySerializer
 
+class SectionList(generics.ListAPIView):
+    queryset = Section.objects.all()
+    serializer_class = SectionSerializer
+
 class ManufacturerList(generics.ListAPIView):
     queryset = Manufacturer.objects.all()
     serializer_class = ManufacturerSerializer
@@ -69,6 +73,9 @@ class ProductList(APIView):
 
                 case 'best_feedback':
                     product_list = product_list.annotate(feedback=F('rating_sum') / F('rating_count')).order_by('-feedback')
+
+        if 'subcategory' in request.GET:
+            product_list = product_list.filter(id_subcategory=Subcategory.objects.filter(name=request.GET['subcategory']).first())
 
         list_data = ProductSerializer(product_list, many=True).data
 
@@ -579,3 +586,18 @@ class OrderProductForCheck(APIView):
         for item in Orderproduct.objects.filter(id_order=get_object_or_404(Order, idorder=request.GET['id_order'])):
             list_product.append({**ProductSerializer(item.id_product).data, 'amount' : item.amount_product})
         return Response(list_product)
+    
+class SubcategoryListCatalog(APIView):
+    def get(self, request: Request):
+        subcategory_list = Subcategory.objects.filter(id_category=Category.objects.filter(name=request.GET['category']).first())
+        return Response(SubcategorySerializer(subcategory_list, many=True).data)
+    
+class CategoryListCatalog(APIView):
+    def get(self, request: Request):
+        category_list = Category.objects.filter(id_section=Section.objects.filter(name=request.GET['section']).first())
+        return Response(CategorySerializer(category_list, many=True).data)
+    
+class CategotySection(APIView):
+    def get(self, request: Request):
+        subcategory = Subcategory.objects.filter(name=request.GET['subcategory']).first()
+        return Response({'section' : subcategory.id_category.id_section.name, 'category' : subcategory.id_category.name})

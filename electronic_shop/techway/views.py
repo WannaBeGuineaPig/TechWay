@@ -69,11 +69,20 @@ def main_view(request: HttpRequest) -> HttpResponse:
         return redirect('TechWay:admin_panel')
     
     if request.method == 'GET':
-        response_product_list = requests.get(URL_API + 'product_list/?' + (f'iduser={request.session["id_user"]}' if 'id_user' in request.session else ''))
+        id_user = f'iduser={request.session["id_user"]}' if 'id_user' in request.session else ''
+        subcateory = ''
+        categories = ''
+        if 'subcategory' in request.session:
+            subcateory = f'subcategory={request.session["subcategory"]}'
+            categories = [*requests.get(f'{URL_API}categoty_section/?subcategory={request.session["subcategory"]}').json().values(), request.session["subcategory"]]
+            request.session.pop('subcategory')
+
+        check_two_varable = '&' if id_user != '' and subcateory != '' else ''
+        response_product_list = requests.get(f'{URL_API}product_list/?{id_user}{check_two_varable}{subcateory}')
         product_list = response_product_list.json()
         product_list = calculate_feedback_and_set_image(response_product_list.json(), 'rating_sum', 'rating_count')
 
-        return render(request, 'techway\\main_window.html', context={'product_list' : product_list})
+        return render(request, 'techway\\main_window.html', context={'product_list' : product_list, 'categories' : categories})
 
 def catalog_view(request: HttpRequest) -> HttpResponse:
     '''
@@ -83,7 +92,25 @@ def catalog_view(request: HttpRequest) -> HttpResponse:
         return redirect('TechWay:admin_panel')
     
     if request.method == 'GET':
-        return render(request, 'techway\\catalog.html')
+        if 'subcategory' in request.GET:
+            request.session['subcategory'] = request.GET['subcategory'] 
+            return redirect('TechWay:home')
+
+        elif 'category' in request.GET:
+            all_categories = requests.get(f'{URL_API}subcategory_list_catalog/?category={request.GET["category"]}').json()
+            select_categories = ['Каталог', request.GET['section'], request.GET['category']]
+            return render(request, 'techway\\catalog.html', context={'all_categories' : all_categories, 'select_categories' : select_categories})
+            
+        elif 'section' in request.GET:
+            all_categories = requests.get(f'{URL_API}category_list_catalog/?section={request.GET["section"]}').json()
+            select_categories = ['Каталог', request.GET['section']]
+            return render(request, 'techway\\catalog.html', context={'all_categories' : all_categories, 'select_categories' : select_categories})
+        
+        else:
+            all_categories = requests.get(f'{URL_API}section_list/').json()
+            select_categories = []
+
+        return render(request, 'techway\\catalog.html', context={'all_categories' : all_categories, 'select_categories' : select_categories})
 
 def favorite_view(request: HttpRequest) -> HttpResponse:
     '''
@@ -540,3 +567,5 @@ def create_check_history_order(request: HttpRequest) -> HttpResponse:
         delete_pdf_file()
 
         return JsonResponse({'pdf_data' : base64.b64encode(pdf_data).decode('utf-8')})
+    
+
