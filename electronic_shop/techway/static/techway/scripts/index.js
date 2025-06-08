@@ -47,7 +47,7 @@ function addFavorite(){
     alert('test');
 }
 
-function deleteBtn(){
+function addFunc(){
     btn = $(this);
     btn.unbind("click");
     idItem = $(this).attr('id');
@@ -63,6 +63,7 @@ function deleteBtn(){
         complete : function(data){
             if(data.responseJSON.status_code == 400) { 
                 alert(data.responseJSON.error);
+                btn.bind("click", addFunc);
             }
             else{
                 newViewBtnBasket(btn, 'add_item', 'В корзине');
@@ -77,11 +78,11 @@ function newViewBtnBasket(item, className, textBtn){
     $(item).fadeTo("slow", 1, function(){
         $(item).removeClass(className);
         $(item).text(textBtn);
-        $(item).bind("click", deleteBtn);
+        $(item).bind("click", addFunc);
     });
 }
 
-$('.add_btn').click(deleteBtn);
+$('.add_btn').click(addFunc);
 
 
 function minBirthDate(){
@@ -94,4 +95,11 @@ function maxBirthDate(){
     let dateNow = new Date();
     dateNow.setFullYear(dateNow.getFullYear() - 100);
     return `${dateNow.getFullYear()}-${dateNow.getMonth() > 9 ? dateNow.getMonth() : `0${dateNow.getMonth()}`}-${dateNow.getDate() > 9 ? dateNow.getDate() : `0${dateNow.getDate()}`}`;
+}
+
+function checkImagePath(path){
+    let pathSplit = path.split('\\');
+    let baseName = pathSplit[pathSplit.length - 1];
+    let baseNameSplit = baseName.split('.');
+    return ['svg', 'png', 'jpeg', 'bmp', 'jpg'].indexOf(baseNameSplit[baseNameSplit.length - 1]) != -1
 }

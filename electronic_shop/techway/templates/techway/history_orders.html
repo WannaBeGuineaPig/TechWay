@@ -1,0 +1,46 @@
+{% extends 'TechWay/base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block head %}
+        <title>TechWay - история заказов</title>
+        <link rel="stylesheet" href="{% static 'techway/styles/history_style.css' %}">
+        {% endblock head %}
+    </head>
+    <body>
+        {% block body %}
+        <div class="container box_margin">
+            <h1 class="title_text text_align_center box_margin">История заказов</h1>
+            <table class="table_history box_margin">
+                <thead>
+                    <tr>
+                        <th class="text_align_center">Номер заказа</th>
+                        <th class="text_align_center">Адрес магазина</th>
+                        <th class="text_align_center">Тип оплаты</th>
+                        <th class="text_align_center">Дата регистрация заказа</th>
+                        <th class="text_align_center">Статус заказа</th>
+                        <th class="text_align_center">Чек</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in list_data %}
+                    <tr>
+                        <td class="text_align_center">{{ item.idorder }}</td>
+                        <td class="text_align_center">{{ item.shop }}</td>
+                        <td class="text_align_center">{{ item.payment_method }}</td>
+                        <td class="text_align_center">{{ item.date_of_regestration }}</td>
+                        <td class="text_align_center">{{ item.status }}</td>
+                        <td class="text_align_center"><button class="download_check_btn">Скачать чек</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <script src="{% static 'techway/scripts/history_orders_script.js' %}" type="text/javascript"></script>
+    {% endblock body %}
+</body>
+</html>

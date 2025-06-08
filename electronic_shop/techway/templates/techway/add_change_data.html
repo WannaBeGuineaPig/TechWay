@@ -9,21 +9,22 @@
     {% block head %}
         <title>TechWay - Админ панель</title>
         <link rel="stylesheet" href="{% static 'techway/styles/add_change_data_style.css' %}">
-    {% endblock head %}
-</head>
-<body>
-    {% block body %}
+        {% endblock head %}
+    </head>
+    <body>
+        {% block body %}
         <div class="container">
             {% if table == 'items' %}
-                <h1 class="box_margin text_align_center">{% if idproduct == -1 %}Добавить товар{% else %}Изменить товар{% endif %}</h1>
-                <p class="error_text text_align_center">{% for error in errors %}{{ error }}<br>{% endfor %}</p>
-                {% include 'TechWay/add_change_item.html' %}
-                {% else %}
-                <h1 class="box_margin text_align_center">{% if iduser == -1 %}Добавить сотрудника{% else %}Изменить сотрудника{% endif %}</h1>
-                <p class="error_text text_align_center">{% for error in errors %}{{ error }}<br>{% endfor %}</p>
-                {% include 'TechWay/add_change_employee.html' %}
+            <h1 class="box_margin text_align_center">{% if idproduct == -1 %}Добавить товар{% else %}Изменить товар{% endif %}</h1>
+            <p class="error_text text_align_center">{% for error in errors %}{{ error }}<br>{% endfor %}</p>
+            {% include 'TechWay/add_change_item.html' %}
+            {% else %}
+            <h1 class="box_margin text_align_center">{% if iduser == -1 %}Добавить сотрудника{% else %}Изменить сотрудника{% endif %}</h1>
+            <p class="error_text text_align_center">{% for error in errors %}{{ error }}<br>{% endfor %}</p>
+            {% include 'TechWay/add_change_employee.html' %}
             {% endif %}
         </div>
+        <script src="{% static 'techway/scripts/add_change_data_script.js' %}" type="text/javascript"></script>
     {% endblock body %}
 </body>
 </html>

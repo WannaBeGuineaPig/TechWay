@@ -29,6 +29,8 @@ urlpatterns = [
     path('update_status_employee_admin_panel/', views.UpdateStatusEmployeeAdminPanel.as_view()),
     path('get_set_data_product/', views.GetSetDataProduct.as_view()),
     path('get_set_data_employee/', views.GetSetDataEmployee.as_view()),
+    path('history_order_user/', views.HistoryOrderUser.as_view()),
+    path('order_product_for_check/', views.OrderProductForCheck.as_view()),
     path('', include('rest_framework.urls', namespace='rest_framework'))
 ]
 

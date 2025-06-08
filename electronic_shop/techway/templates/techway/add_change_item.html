@@ -115,7 +115,18 @@
         <label for="amount_item">Количество: </label>
         <input name="amount_item" type="number" value="{{ amount }}" required>
     </div>
+<!-- 
+    {% if idproduct == -1 %}
+        <div class="box_data">
+            <label for="amount_item">Фотографии:</label>
+            <div class="box_images">
+                <textarea name="" id="all_images"></textarea>
+                <input id="select_image" type="file" accept="image/*" ="Добавить фото">
+            </div>
+        </div>
+    {% endif %} -->
     <div class="box_btn">
         <button class="add_change" type="submit">{% if idproduct == -1 %}Добавить{% else %}Изменить{% endif %}</button>
     </div>
 </form>
+

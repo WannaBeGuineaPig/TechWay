@@ -214,6 +214,9 @@ def personal_account_view(request: HttpRequest) -> HttpResponse:
             requests.delete(URL_API + 'auth_reg_user/', data={'iduser': request.session['id_user']})
             request.session.pop('id_user')
             return redirect('TechWay:home')
+        
+        elif 'btn' in request.POST and request.POST['btn'] == 'История':
+            return redirect('TechWay:history_order')
 
         else:
             return redirect('TechWay:home')
@@ -272,7 +275,7 @@ def product_view(request: HttpRequest, product_id: int) -> HttpResponse:
     if request.method == 'GET':
         id_user = f'?id_user={request.session["id_user"]}' if 'id_user' in request.session else ''
         product = requests.get(f'{URL_API}get_product/{product_id}{id_user}').json()
-        product['feedback'] = round(product['rating_sum'] / product['rating_count'], 2)
+        product['feedback'] = round(product['rating_sum'] / product['rating_count'], 2) if product['rating_count'] != 0 else 0
         return render(request, 'techway\\item_page.html', context={'product' : product})
     
 def add_to_basket(request: HttpRequest, product_id: int) -> JsonResponse:
@@ -402,6 +405,8 @@ def create_report_admin_panel(request: HttpRequest) -> JsonResponse:
         with open(path_file, 'rb') as pdf_file:
             pdf_data = pdf_file.read()
 
+        delete_pdf_file()
+
         return JsonResponse({'pdf_data' : base64.b64encode(pdf_data).decode('utf-8')})
     
 def delete_admin_panel(request: HttpRequest) -> JsonResponse:
@@ -517,3 +522,21 @@ def add_change_data_view(request: HttpRequest) -> JsonResponse:
         request.session.pop('table')
         request.session.pop('id')
         return redirect('TechWay:admin_panel')
+    
+
+def history_order_view(request: HttpRequest) -> HttpResponse:
+    if request.method == 'GET':
+        list_data = requests.get(f'{URL_API}history_order_user/?id_user={request.session["id_user"]}').json()
+        return render(request, 'techway\\history_orders.html', context={'list_data' : list_data})
+    
+def create_check_history_order(request: HttpRequest) -> HttpResponse:
+    if request.method == 'POST':
+        list_items = requests.get(f'{URL_API}order_product_for_check/?id_order={request.POST["id_order"]}').json()
+        path_to_pdf = create_check_order(request.POST['id_order'], request.POST['address_shop'], request.POST['payment_method'], request.POST['date_ordering'], list_items)
+        pdf_data = ''
+        with open(path_to_pdf, 'rb') as pdf_file:
+            pdf_data = pdf_file.read()
+
+        delete_pdf_file()
+
+        return JsonResponse({'pdf_data' : base64.b64encode(pdf_data).decode('utf-8')})

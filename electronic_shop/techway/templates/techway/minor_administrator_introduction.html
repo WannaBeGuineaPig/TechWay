@@ -59,7 +59,7 @@
 
     $('#change_status').click(function(){
         let selectStatus = $('#select_status').find(':selected').text();
-        let currentStatus = $($('.select_row').children()[4]).text();
+        let currentStatus = $($('.select_row').children()[5]).text();
         if(currentStatus == ''){
             alert('Выберете заказ для изменения статуса!');
             return;

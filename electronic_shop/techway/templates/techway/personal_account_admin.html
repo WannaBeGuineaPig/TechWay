@@ -84,9 +84,8 @@
         </div>
         <div class="box_info_acc">
             <h1 class="text_align_center title_for_update">Информация о профиле</h1>
-            <form action="" method="post" class="box_btns">
+            <form action="" method="post" class="box_btns" style="justify-content: space-evenly;">
                 {% csrf_token %}
-                <input type="submit" value="История" class="sign_in_btn" name="btn" id="history_btn_id">
                 <input type="submit" value="Выйти из аккаунта" class="sign_out_btn" name="btn" id="sign_out_btn_id">
                 <input type="submit" value="Удалить аккаунт" class="sign_out_btn" name="btn" id="del_acc_btn_id">
             </form>

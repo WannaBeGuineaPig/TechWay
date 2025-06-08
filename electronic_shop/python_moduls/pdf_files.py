@@ -11,7 +11,7 @@ def delete_pdf_file():
     if os.path.isfile(PATH_FILE_PDF):
         os.remove(PATH_FILE_PDF)
 
-def create_check_order(address_shop: str, id_order, payment_method, date_ordering, list_data: list[dict]) -> str:
+def create_check_order(id_order: str, address_shop: str, payment_method: str, date_ordering: str, list_data: list[dict]) -> str:
     def setting_table_cell(content):
         return TableCell(content, border_width=Decimal(0))
     

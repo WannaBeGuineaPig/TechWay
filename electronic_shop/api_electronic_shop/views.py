@@ -556,3 +556,26 @@ class GetSetDataEmployee(APIView):
 
         employee.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class HistoryOrderUser(APIView):
+    def get(self, request: Request):
+        orders = OrderSerializer(Order.objects.filter(id_user=get_object_or_404(User, iduser=request.GET["id_user"])).exclude(status='Не оформлен').order_by('-idorder'), many=True).data
+        for order in orders:
+            shop = Shop.objects.filter(idshop=order['id_shop'])
+            order['shop'] = shop.first().addres if len(shop) > 0 else 'Нет'
+            date = 'Нет'
+            if order['date_of_regestration'] != None:
+                date = datetime.strptime(order['date_of_regestration'].split('+')[0], '%Y-%m-%dT%H:%M:%S')
+                date += timedelta(hours=5)
+                date = date.strftime('%Y-%m-%d %H:%M:%S')
+            order['date_of_regestration'] = date
+
+
+        return Response(orders)
+    
+class OrderProductForCheck(APIView):
+    def get(self, request: Request):
+        list_product = []
+        for item in Orderproduct.objects.filter(id_order=get_object_or_404(Order, idorder=request.GET['id_order'])):
+            list_product.append({**ProductSerializer(item.id_product).data, 'amount' : item.amount_product})
+        return Response(list_product)

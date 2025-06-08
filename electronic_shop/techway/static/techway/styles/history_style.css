@@ -1,0 +1,50 @@
+.table_history{
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+.table_history tr, .table_history th, .table_history td{
+    border: 1px solid black;
+}
+
+.table_history th, .table_history td{
+    padding: 10px;
+    font-size: 18px;
+}
+
+.download_check_btn{
+    font-size: 18px;
+    background-color: transparent;
+    border: none;
+    color: blue;
+}
+
+.download_check_btn:hover{
+    color: rgb(100, 100, 255);
+}
+
+.download_check_btn:active{
+    color: rgb(150, 150, 255);
+}
+
+@media(max-width: 1000px){
+    .table_history th, .table_history td{
+        padding: 10px 0 10px 0;
+        font-size: 12px;
+    }
+    .download_check_btn{
+        font-size: 12px;    
+    }
+
+}
+
+@media(max-width: 500px){
+    .table_history th, .table_history td{
+        padding: 5px 0 5px 0;
+        font-size: 10px;
+    }
+    
+    .download_check_btn{
+        font-size: 10px;
+    }
+
+}
