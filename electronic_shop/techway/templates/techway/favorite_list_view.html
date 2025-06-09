@@ -1,0 +1,43 @@
+{% load static %}
+
+<div class="all_cards_favorite">
+<!-- Карточка товара -->
+{% for favorite in favorites %}
+    <div class="card_item box_margin">
+        <div class="image_box">
+            <img src="{% static 'techway/images/photo_items/' %}{{ favorite.url_image }}" alt="фото товара">
+        </div>
+        <div class="info_box">
+            <div class="box_data">
+                <div>
+                    <a class="name_item" href="#">{{ favorite.name }}</a>
+                </div>
+                <div class="feedback_item">
+                    <div>
+                        <p class="feedback_text"><img class="image_star" src="{% static 'techway/images/star.png' %}" alt=""> {{ favorite.feedback }} | {{ favorite.rating_count }} отзыва(-ов)</p>
+                    </div>
+                    <div class="count_text">
+                        <p>В наличие {{ favorite.amount }} шт</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="buy_favorite_price">
+            <p class="price_item">{{ favorite.price }} &#8381</p>
+            <div class="buy_favorite">
+                <div class="box_center">
+                    <img  class="image_heart" src="{% static 'techway/images/fill_heart.png' %}" alt="Избранное" title="В избранном" {% if 'id_user' in request.session %}onclick="addOrRemoveFavorite(event, '{% static 'techway/images/heart.png' %}', '{% static 'techway/images/fill_heart.png' %}', '{{ favorite.idproduct }}')"{% endif %}>
+                {% if favorite.basket %}
+                    <a href="{% url 'TechWay:backet' %}" class="link_buy" title="В корзине"><span>В корзине</span></a>
+                {% else %}
+                    <button class="link_buy add_btn" title="добавить в корзину" id="{{ favorite.idproduct }}" {% if 'id_user' not in request.session%} disabled {% endif%}><span>Купить</span></button>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+<!--  -->
+</div>
+
+<script src="{% static 'techway/scripts/index.js' %}"></script>

@@ -6,87 +6,12 @@
     justify-content: space-between;
 }
 
-.box_about_favorite{
-    background-color: white;
-    display: flex;
-    height: 100px;
-    border-radius: 10px;
-}
-
-.box_about_favorite > *{
-    width: 50%;
-}
-
-.box_info_instruments{
-    height: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    flex-direction: column;
-    width: 80%;
-}
-
-.box_info_instruments > *{
-    margin-left: 3vh;
-}
-
-.box_selected_all{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    column-gap: 1vh;
-    width: 150px;
-    height: 40px;
-    border: 1px solid lightgray;
-    border-radius: 5px;
-}
-
-.box_selected_all:hover{
-    opacity: 0.7;
-    cursor: pointer;
-}
-
-.box_selected_all:active{
-    opacity: 0.5;
-}
-
-.box_selected_all input, .box_selected_all p{
-    user-select: none;
-}
-
-.box_buy_items_btn{
-    display: flex;
-    justify-content: end;
-    align-items: center;
-    width: 20%;
-}
-
-.buy_items_btn{
-    height: 4vh;
-    width: 5vw;
-    min-width: 70px;
-    font-size: 14px;
-    border-radius: 5px; 
-    background-color: transparent;
-    margin-right: 3vh;
-}
-
-.buy_items_btn:hover{
-    opacity: 0.7;
-    background-color: var(--first_main_color);
-    border: 3px solid black;
-    transition: border 0s;
-}
-
-.buy_items_btn:active{
-    opacity: 0.5;
-}
-
 .card_item{
     width: 100%;
     background-color: white;
     display: flex;
     justify-content: space-between;
-    max-height: 300px;
+    height: 300px;
     border-radius: 15px;
 }
 
@@ -102,14 +27,15 @@
 }
 
 .image_box{
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .image_box img{
-    max-height: 90%;
-    max-width: 90%;
+    max-height: 80%;
+    max-width: 80%;
 }
 
 .info_box{
@@ -172,29 +98,19 @@
     column-gap: 1vw;
 }
 
-.favorite{
-    background-color: whitesmoke;
-    border-radius: 10px;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0.7;
-}
-
-.favorite:hover, .favorite:hover > *{
-    opacity: 1;
-
-}
-
 .image_heart{
-    width: 50%;
-    height: 50%;
-    opacity: 0.5;
+    max-width: 30px;
+    max-height: 30px;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.image_heart:hover{
+    opacity: 1;
 }
 
 .link_buy{
+    font-size: 16px;
     width: 100px;
     height: 50px;
     border: 1px solid black;
@@ -208,24 +124,9 @@
     cursor: pointer;
 }
 
-.link_buy:hover{
+.link_buy:not(.add_item, .error_add_item):hover{
     background-color: var(--first_main_color);
     color: white;
-}
-
-.link_buy:active{
-    background-color: var(--second_main_color);
-    color: white;
-}
-
-.box_add_to_buket{
-    width: 50px;
-    height: 50px;
-}
-
-.box_add_to_buket input{
-    width: 15px;
-    height: 15px;
 }
 
 .all_cards_favorite{
@@ -243,24 +144,37 @@
     width: 100%;
 }
 
+.add_item{
+    font-size: 18px;
+    background-color: green;
+}
+
+.add_item:after{
+    content: '✓';
+}
+
+.error_add_item{
+    font-size: 22px;
+    background-color: red;
+}
+
+.error_add_item:after{
+    content: '×';
+}
+
 @media(max-width: 1000px){
-    .box_info_instruments h3{
-        font-size: 1em;
+    .image_box, .buy_favorite_price{
+        width: 50%;
     }
-    .box_selected_all{
-        width: 100px;
-        height: 30px;
-        font-size: 12px;
+
+    .image_box{
+        height: 60%;
     }
     .box_title h1{
         width: 80%;
     }
 
     .link_buy{
-        height: 40px;
-    }
-    .favorite{
-        width: 40px;
         height: 40px;
     }
     .buy_favorite_price{

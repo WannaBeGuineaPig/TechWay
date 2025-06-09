@@ -29,13 +29,9 @@
                     <div class="buy_favorite">
                         <div class="box_center">
                             {% if product.favorites %}
-                                <a class="favorite" href="#" title="В избранном" onclick="addFavorite()">
-                                    <img class="image_heart" src="{% static 'techway/images/fill_heart.png' %}" alt="">
-                                </a>
+                                <img  class="image_heart" src="{% static 'techway/images/fill_heart.png' %}" alt="Избранное" title="В избранном" {% if 'id_user' in request.session %}onclick="addOrRemoveFavorite(event, '{% static 'techway/images/heart.png' %}', '{% static 'techway/images/fill_heart.png' %}', '{{ product.idproduct }}')"{% endif %}>
                             {% else %}
-                                <a class="favorite" href="#" title="Добавить в избранное" {% if 'id_user' in request.session %}onclick="addFavorite()"{% endif %}>
-                                    <img class="image_heart" src="{% static 'techway/images/heart.png' %}" alt="">
-                                </a>
+                                <img class="image_heart" src="{% static 'techway/images/heart.png' %}" alt="Избранное" title="Добавить в избранное" {% if 'id_user' in request.session %}onclick="addOrRemoveFavorite(event, '{% static 'techway/images/heart.png' %}', '{% static 'techway/images/fill_heart.png' %}', '{{ product.idproduct }}')"{% endif %}>
                             {% endif %}
                             {% if product.basket %}
                                 <a href="{% url 'TechWay:backet' %}" class="link_buy" title="В корзине"><span>В корзине</span></a>

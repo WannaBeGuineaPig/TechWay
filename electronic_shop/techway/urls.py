@@ -25,4 +25,6 @@ urlpatterns = [
     path('add_change_data_view/', views.add_change_data_view, name='add_change'),
     path('history_order/', views.history_order_view, name='history_order'),
     path('create_check_history_order/', views.create_check_history_order),
+    path('add_favorite_item/', views.add_favorite_item),
+    path('delete_favorite_item/', views.delete_favorite_item),
 ]

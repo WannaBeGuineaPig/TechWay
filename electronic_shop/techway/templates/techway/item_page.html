@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% block head %}
-        <title>TechWay - {{ product.name }}</title> <!-- Вставить название товара -->
+        <title>TechWay - {{ product.name }}</title>
         <link rel="stylesheet" href="{% static 'techway/styles/item_page_style.css' %}">
     {% endblock head %}
 </head>
@@ -49,9 +49,11 @@
                         </div>
                         <div class="box_center">
                             <div>
-                                <a class="favorite" href="#" title="добавить в избранное">
-                                    <img class="image_heart" src="{% static 'techway/images/heart.png' %}" alt="">
-                                </a>
+                                {% if product.favorites %}
+                                    <img  class="image_heart" src="{% static 'techway/images/fill_heart.png' %}" alt="Избранное" title="В избранном" {% if 'id_user' in request.session %}onclick="addOrRemoveFavorite(event, '{% static 'techway/images/heart.png' %}', '{% static 'techway/images/fill_heart.png' %}', '{{ product.idproduct }}')"{% endif %}>
+                                {% else %}
+                                    <img class="image_heart" src="{% static 'techway/images/heart.png' %}" alt="Избранное" title="Добавить в избранное" {% if 'id_user' in request.session %}onclick="addOrRemoveFavorite(event, '{% static 'techway/images/heart.png' %}', '{% static 'techway/images/fill_heart.png' %}', '{{ product.idproduct }}')"{% endif %}>
+                                {% endif %}
                                 {% if product.basket %}
                                     <a href="{% url 'TechWay:backet' %}" class="link_buy" title="В корзине"><span>В корзине</span></a>
                                 {% else %}

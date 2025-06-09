@@ -4,7 +4,6 @@ function click_sort_link(){
     if (box_types_sort.style.visibility == 'hidden'){
         box_types_sort.style.visibility = 'visible';
         sort_link.style.color = 'var(--second_main_color)';
-        // $('input[type=radio]:checked').focus()
     }
     else{
         box_types_sort.style.visibility = 'hidden';
@@ -15,8 +14,10 @@ function click_sort_link(){
 $('input[type=radio]').click(function(){
     $('#box_product_list').css('filter', 'blur(10px)')
     let type_sort = $(this).attr('value');
+    let category = $('.categories').text();
+    category = category != '' ? '&subcategory=' + category.split(' > ')[2] : '';
     $.ajax({
-        url: `${URLBACK}update_list_product/?sort=${type_sort}`,
+        url: `${URLBACK}update_list_product/?sort=${type_sort}${category}`,
         type: 'GET',
         success : function (json) {
             if(json.result){

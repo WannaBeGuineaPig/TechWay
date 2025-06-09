@@ -43,12 +43,49 @@ function newViewPrice(text){
     return newText
 }
 
-function addFavorite(){
-    alert('test');
+function addOrRemoveFavorite(event, ImagePath, fillImagePath, id_product){
+    let url = '';
+    let title = '';
+    let imagePath = '';
+    
+    if ($(event.target).attr('title') == 'Добавить в избранное'){
+        url = `${URLBACK}add_favorite_item/?id_product=${id_product}`;
+        title = 'В избранном';
+        imagePath = fillImagePath;
+    } 
+    
+    else {
+        url = `${URLBACK}delete_favorite_item/?id_product=${id_product}`;
+        title = 'Добавить в избранное';
+        imagePath = ImagePath;
+    }
+        
+    $.ajax({
+        url : url,
+        type : 'GET',
+        complete : function(){
+            $(event.target).attr('src', imagePath);
+            $(event.target).attr('title', title);
+        }
+    });
+}
+
+function removeFavorite(event, oldImagePath, newImagePath, id_product){
+    $.ajax({
+        url : `${URLBACK}delete_favorite_item/?id_product=${id_product}`,
+        type : 'GET',
+        complete : function(){
+            $(event.target).attr('src', newImagePath);
+            $(event.target).attr('title', 'Добавить в избранное');
+            $(event.target).onclick = function(){addFavorite(event, newImagePath, oldImagePath, id_product)};
+    
+        }
+    });
 }
 
 function addFunc(){
     btn = $(this);
+    console.log(btn);
     btn.unbind("click");
     idItem = $(this).attr('id');
     textBtn = $(this).text();
@@ -83,7 +120,6 @@ function newViewBtnBasket(item, className, textBtn){
 }
 
 $('.add_btn').click(addFunc);
-
 
 function minBirthDate(){
     let dateNow = new Date();

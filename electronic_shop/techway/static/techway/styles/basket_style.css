@@ -218,9 +218,14 @@
 }
 
 .image_heart{
-    width: 50%;
-    height: 50%;
-    opacity: 0.5;
+    max-width: 30px;
+    max-height: 30px;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.image_heart:hover{
+    opacity: 1;
 }
 
 .box_change_count_item{

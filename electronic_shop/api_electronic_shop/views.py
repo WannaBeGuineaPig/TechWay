@@ -1,4 +1,4 @@
-import pytz, json
+import pytz
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -601,3 +601,28 @@ class CategotySection(APIView):
     def get(self, request: Request):
         subcategory = Subcategory.objects.filter(name=request.GET['subcategory']).first()
         return Response({'section' : subcategory.id_category.id_section.name, 'category' : subcategory.id_category.name})
+    
+class FavoriteAction(APIView):
+    def get(self, request: Request):
+        user = get_object_or_404(User, iduser=request.GET['id_user'])
+        favorite_list = Favorite.objects.filter(id_user=user)
+        result_list = []
+        for item in favorite_list:
+            product = ProductSerializer(item.id_product).data
+            product['url_image'] = ProductPhoto.objects.filter(id_product=item.id_product).first().url_photo
+            order_product = Orderproduct.objects.filter(id_product=item.id_product)
+            order = Order.objects.filter(id_user=user, status='Не оформлен').first()
+            order_product = [i for i in order_product if i.id_order == order]
+            product['basket'] = len(order_product) > 0
+            product['feedback'] = round(item.id_product.rating_sum / item.id_product.rating_count, 2) if item.id_product.rating_count != 0 else 0
+            result_list.append(product)
+        
+        return Response(result_list)
+
+    def post(self, request: Request):
+        Favorite.objects.create(id_user=get_object_or_404(User, iduser=request.data['id_user']), id_product=get_object_or_404(Product, idproduct=request.data['id_product']))
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def delete(self, request: Request):
+        Favorite.objects.get(id_user=get_object_or_404(User, iduser=request.data['id_user']), id_product=get_object_or_404(Product, idproduct=request.data['id_product'])).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -51,7 +51,7 @@ def check_to_admin(id_user: int) -> bool:
 
 def update_product_list(request: HttpRequest) -> JsonResponse:
     if request.method == 'GET':
-        response_product_list = requests.get(URL_API + f'product_list/?sort={request.GET["sort"]}&' + (f'iduser={request.session["id_user"]}' if 'id_user' in request.session else ''))
+        response_product_list = requests.get(URL_API + f'product_list/?sort={request.GET["sort"]}&' + (f'iduser={request.session["id_user"]}' if 'id_user' in request.session else '') + (f'&subcategory={request.GET["subcategory"]}' if 'subcategory' in request.GET else ''))
         product_list = calculate_feedback_and_set_image(response_product_list.json(), 'rating_sum', 'rating_count')
 
         render_page = render(request, 'techway\\product_previews_list.html', context={'product_list' : product_list})
@@ -124,7 +124,8 @@ def favorite_view(request: HttpRequest) -> HttpResponse:
         return redirect('TechWay:admin_panel')
 
     if request.method == 'GET':
-        return render(request, 'techway\\favorite.html')
+        return render(request, 'techway\\favorite.html', context={
+            'favorites': requests.get(f'{URL_API}favorite_action/?id_user={request.session["id_user"]}').json()})
 
 def backet_view(request: HttpRequest) -> HttpResponse:
     '''
@@ -569,3 +570,18 @@ def create_check_history_order(request: HttpRequest) -> HttpResponse:
         return JsonResponse({'pdf_data' : base64.b64encode(pdf_data).decode('utf-8')})
     
 
+def add_favorite_item(request: HttpRequest):
+    if request.method == 'GET':
+        requests.post(f'{URL_API}favorite_action/', data={
+            'id_user' : request.session["id_user"],
+            'id_product' : request.GET["id_product"],
+        })
+        return JsonResponse({})
+
+def delete_favorite_item(request: HttpRequest):
+    if request.method == 'GET':
+        requests.delete(f'{URL_API}favorite_action/', data={
+            'id_user' : request.session["id_user"],
+            'id_product' : request.GET["id_product"],
+        })
+        return JsonResponse({})

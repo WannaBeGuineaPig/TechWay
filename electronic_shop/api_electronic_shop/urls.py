@@ -35,6 +35,7 @@ urlpatterns = [
     path('category_list_catalog/', views.CategoryListCatalog.as_view()),
     path('subcategory_list_catalog/', views.SubcategoryListCatalog.as_view()),
     path('categoty_section/', views.CategotySection.as_view()),
+    path('favorite_action/', views.FavoriteAction.as_view()),
     path('', include('rest_framework.urls', namespace='rest_framework'))
 ]
 
