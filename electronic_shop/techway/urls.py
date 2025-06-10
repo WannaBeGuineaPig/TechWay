@@ -27,4 +27,6 @@ urlpatterns = [
     path('create_check_history_order/', views.create_check_history_order),
     path('add_favorite_item/', views.add_favorite_item),
     path('delete_favorite_item/', views.delete_favorite_item),
+    path('password_recovery/', views.password_recovery_view, name='password_recovery'),
+    path('change_password/<str:hash>/', views.change_password_view, name='change_password'),
 ]

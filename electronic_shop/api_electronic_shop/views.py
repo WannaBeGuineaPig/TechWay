@@ -7,7 +7,7 @@ from .models import *
 from .serializers import *
 from python_moduls.modul import * 
 from django.shortcuts import get_object_or_404
-from django.db.models import F
+from django.db.models import F, Q
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.conf import settings
@@ -56,12 +56,9 @@ class ProcessorList(generics.ListAPIView):
 class ProductList(APIView):
     def get(self, request: Request):
         product_list = Product.objects.all()
-        
-        if 'sort' in request.GET:        
-            match(request.GET['sort']):
-                case 'popular_first':
-                    pass
 
+        if 'sort' in request.GET:        
+            match(request.GET['sort']): 
                 case 'low_cost_first':
                     product_list = product_list.order_by('price')
 
@@ -73,9 +70,25 @@ class ProductList(APIView):
 
                 case 'best_feedback':
                     product_list = product_list.annotate(feedback=F('rating_sum') / F('rating_count')).order_by('-feedback')
+        
+        else:
+            product_list = product_list.order_by('price')
 
         if 'subcategory' in request.GET:
             product_list = product_list.filter(id_subcategory=Subcategory.objects.filter(name=request.GET['subcategory']).first())
+
+        if 'search' in request.GET:
+            product_list = product_list.filter(Q(name__icontains=request.GET['search'])|Q(describe__icontains=request.GET['search']))
+
+        count_page = len(product_list) // 10 + (0 if len(product_list) % 10 == 0 else 1)
+        all_product_items = len(product_list)
+
+        if 'number_page' in request.GET:
+            number_page = int(request.GET['number_page']) - 1
+            product_list = product_list[number_page*10:(number_page+1)*10]
+        
+        else:
+            product_list = product_list[:10]
 
         list_data = ProductSerializer(product_list, many=True).data
 
@@ -83,6 +96,7 @@ class ProductList(APIView):
             list_photo_item = ProductPhoto.objects.filter(id_product=list_data[item]['idproduct'])
             list_serializer = ProductPhotoSerializer(list_photo_item, many=True).data
             list_data[item]['url_photos'] = [i['url_photo'] for i in list_serializer]
+            list_data[item]['feedback'] = round(list_data[item]['rating_sum'] / list_data[item]['rating_count'], 2) if list_data[item]['rating_count'] != 0 else 0
 
             if 'iduser' in request.GET:
                 list_data[item]['favorites'] = len(Favorite.objects.filter(id_user=request.GET['iduser'], id_product=list_data[item]['idproduct'])) > 0
@@ -90,9 +104,8 @@ class ProductList(APIView):
                 order = Order.objects.filter(id_user=request.GET['iduser'], status='Не оформлен').first()
                 order_product = [i for i in order_product if i.id_order == order]
                 list_data[item]['basket'] = len(order_product) > 0
-            
 
-        return Response(list_data)
+        return Response({'list_data' : list_data, 'count_page' : count_page, 'all_product_items' : all_product_items})
 
 class AuthorizationRegistrationUser(APIView):
     def get(self, request: Request, pk = None):
@@ -626,3 +639,32 @@ class FavoriteAction(APIView):
     def delete(self, request: Request):
         Favorite.objects.get(id_user=get_object_or_404(User, iduser=request.data['id_user']), id_product=get_object_or_404(Product, idproduct=request.data['id_product'])).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class RecoveryPassword(APIView):
+    def post(self, request: Request):
+        if 'mail' not in request.data:
+            return Response('Не передана почта!', status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.filter(mail=request.data['mail'])
+        if len(user) == 0:
+            return Response('Пользователь с такой почтой не найден!', status=status.HTTP_400_BAD_REQUEST)
+        return Response(UserSerializer(user.first()).data, status=status.HTTP_200_OK)
+
+
+class UpdatePassword(APIView):
+    def post(self, request: Request):
+        if 'password' not in request.data:
+            return Response('Не передан пароль!', status=status.HTTP_400_BAD_REQUEST)
+        
+        if 'mail' not in request.data:
+            return Response('Не передана почта!', status=status.HTTP_400_BAD_REQUEST)
+        
+        user = User.objects.filter(mail=request.data['mail'])
+
+        if len(user) == 0:
+            return Response('Пользователь с такой почтой не найден!', status=status.HTTP_400_BAD_REQUEST)
+        
+        user = user.first()
+
+        user.password = hash_password(request.data['password'])
+        user.save()
+        return Response('Пароль успешно изменён!')

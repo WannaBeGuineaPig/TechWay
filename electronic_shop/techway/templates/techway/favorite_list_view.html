@@ -2,6 +2,11 @@
 
 <div class="all_cards_favorite">
 <!-- Карточка товара -->
+{% if favorites|length == 0 %}
+    <div class="box_margin box_info_favorite">
+        <h3 class="text_align_center">В избранном нет товаров</h3>
+    </div>
+{% endif %}
 {% for favorite in favorites %}
     <div class="card_item box_margin">
         <div class="image_box">

@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.core.mail import EmailMultiAlternatives
-from python_moduls.add_product_data import *
 from python_moduls.pdf_files import *
 from python_moduls.modul import *
 from django.conf import settings
@@ -12,15 +11,17 @@ from email.mime.image import MIMEImage
 from email.mime.application import MIMEApplication
 
 URL_API = 'http://127.0.0.1:8000/api/'
+URL_BACK = 'http://127.0.0.1:8000/'
 
-def send_to_mail(to_mail, pdf: str):
-    html_content = render_to_string('techway\\mail.html', context={'check_pdf' : pdf})
+def send_to_mail(to_mail, title_mail, template_mail, dict_data={}, file_name_pdf=None, pdf=None):
+    html_content = render_to_string(f'techway\\{template_mail}', context=dict_data)
 
     msg = EmailMultiAlternatives(
-        "Ваш чек о заказе",
+        title_mail,
         '',
         settings.EMAIL_HOST_USER,
         [to_mail],
+        headers={'test' : 'test'}
     )
     msg.attach_alternative(html_content, "text/html")
 
@@ -31,19 +32,23 @@ def send_to_mail(to_mail, pdf: str):
 
     image.add_header('Content-ID', '<logo>')
     
-    with open(pdf, 'rb') as file:
-        content = MIMEApplication(file.read(), 'pdf', filename = 'check.pdf')
+    if file_name_pdf and pdf:
+        with open(pdf, 'rb') as file:
+            content = MIMEApplication(file.read(), 'pdf', filename = file_name_pdf)
 
-    content.add_header('Content-Disposition', 'attachment', filename='check.pdf')
-    content.add_header('Content-ID', '<check>')
+        content.add_header('Content-Disposition', 'attachment', filename=file_name_pdf)
+        content.add_header('Content-ID', '<check>')
+
+        msg.attach(content)
 
     msg.attach(image)
-    msg.attach(content)
 
     try:
         msg.send()
-    except:
-        pass
+    except Exception as e:
+        return False
+
+    return True
 
 def check_to_admin(id_user: int) -> bool:
     position = requests.get(f'{URL_API}auth_reg_user/{id_user}').json()['position']
@@ -51,10 +56,17 @@ def check_to_admin(id_user: int) -> bool:
 
 def update_product_list(request: HttpRequest) -> JsonResponse:
     if request.method == 'GET':
-        response_product_list = requests.get(URL_API + f'product_list/?sort={request.GET["sort"]}&' + (f'iduser={request.session["id_user"]}' if 'id_user' in request.session else '') + (f'&subcategory={request.GET["subcategory"]}' if 'subcategory' in request.GET else ''))
-        product_list = calculate_feedback_and_set_image(response_product_list.json(), 'rating_sum', 'rating_count')
+        id_user = f'iduser={request.session["id_user"]}' if 'id_user' in request.session else ''
+        sort = f'sort={request.GET["sort"]}' if 'sort' in request.GET else ''
+        subcategory = f'subcategory={request.GET["subcategory"]}' if 'subcategory' in request.GET else ''
+        search = f'search={request.GET["search"]}' if 'search' in request.GET else ''
+        number_page = f'number_page={request.GET["number_page"]}' if 'number_page' in request.GET else ''
+        data_to_api = '&'.join([i for i in [id_user, sort, subcategory, search, number_page] if i != ''])
+        response = requests.get(f'{URL_API}product_list/?{data_to_api}').json()
+        product_list = response['list_data']
+        count_page = response['count_page']
 
-        render_page = render(request, 'techway\\product_previews_list.html', context={'product_list' : product_list})
+        render_page = render(request, 'techway\\product_previews_list.html', context={'product_list' : product_list, 'count_page' : count_page})
         return JsonResponse({
             'result' : True,
             'product_list_page' : render_page.content.decode("utf-8")
@@ -65,6 +77,12 @@ def main_view(request: HttpRequest) -> HttpResponse:
     Представление для обработки главной страницы.
     '''
 
+    if 'mail_user_recovery_password' in request.session:
+        request.session.pop('mail_user_recovery_password')
+
+    if 'hash_to_reset_password' in request.session:
+        request.session.pop('hash_to_reset_password')
+
     if 'id_user' in request.session and check_to_admin(request.session['id_user']):
         return redirect('TechWay:admin_panel')
     
@@ -72,17 +90,31 @@ def main_view(request: HttpRequest) -> HttpResponse:
         id_user = f'iduser={request.session["id_user"]}' if 'id_user' in request.session else ''
         subcateory = ''
         categories = ''
+        search = f'search={request.GET["search"]}' if 'search' in request.GET else ''
+        sort = f'sort={request.GET["sort"]}' if 'sort' in request.GET else ''
+        number_page = f'number_page={request.GET["number_page"]}' if 'number_page' in request.GET else ''
         if 'subcategory' in request.session:
             subcateory = f'subcategory={request.session["subcategory"]}'
             categories = [*requests.get(f'{URL_API}categoty_section/?subcategory={request.session["subcategory"]}').json().values(), request.session["subcategory"]]
             request.session.pop('subcategory')
 
-        check_two_varable = '&' if id_user != '' and subcateory != '' else ''
-        response_product_list = requests.get(f'{URL_API}product_list/?{id_user}{check_two_varable}{subcateory}')
-        product_list = response_product_list.json()
-        product_list = calculate_feedback_and_set_image(response_product_list.json(), 'rating_sum', 'rating_count')
+        data_to_api = '&'.join([i for i in [id_user, subcateory, search, sort, number_page] if i != ''])
+        response = requests.get(f'{URL_API}product_list/?{data_to_api}').json()
+        product_list = response['list_data']
+        count_page = response['count_page']
+        all_product_items = response['all_product_items']
 
-        return render(request, 'techway\\main_window.html', context={'product_list' : product_list, 'categories' : categories})
+        dict_data = {
+            'product_list' : product_list, 
+            'number_page' : request.GET["number_page"] if 'number_page' in request.GET else 1, 
+            'count_page' : count_page, 
+            'categories' : categories, 
+            'search' : request.GET["search"] if 'search' in request.GET else '',
+            'all_product_items' : all_product_items,
+            'sort' : request.GET['sort'] if 'sort' in request.GET else '',
+        }
+
+        return render(request, 'techway\\main_window.html', context=dict_data)
 
 def catalog_view(request: HttpRequest) -> HttpResponse:
     '''
@@ -187,12 +219,12 @@ def backet_view(request: HttpRequest) -> HttpResponse:
         response = requests.get(f'{URL_API}receive_cleared_products/?id_order={receive_order["idorder"]}').json()
         shop = requests.get(f'{URL_API}shop_list/?idshop={request.POST["select_shop"]}').json()[0]['addres']
         
-        path_file_check = create_check_order(shop, receive_order['idorder'], method, response['date_ordering'], response['list_product'])
-        
+        path_file_check = create_check_order(receive_order['idorder'], shop, method, response['date_ordering'], response['list_product'])
+
         email_user = requests.get(f'{URL_API}auth_reg_user/{request.session["id_user"]}').json()['mail']
 
-        send_to_mail(email_user, path_file_check)
-
+        send_to_mail(email_user, 'Чек о заказаных товарах', 'mail_order.html', file_name_pdf='check.pdf', pdf=path_file_check)
+        
         delete_pdf_file()
 
         return redirect('TechWay:home')
@@ -585,3 +617,50 @@ def delete_favorite_item(request: HttpRequest):
             'id_product' : request.GET["id_product"],
         })
         return JsonResponse({})
+    
+def password_recovery_view(request: HttpRequest):
+    if 'id_user' not in request.session:
+        return redirect('TechWay:home')
+    
+    if request.method == 'GET':
+        return render(request, 'techway\\password_recovery.html')
+    
+    else:
+        response = requests.post(f'{URL_API}recovery_password/', data={'mail' : request.POST['input_mail']})
+        if response.status_code == 400:
+            return render(request, 'techway\\password_recovery.html', context={'error' : response.json()})
+        
+        hash_to_reset_password = create_hash(20)
+        url_to_reset_password = f'{URL_BACK}change_password/{hash_to_reset_password}/'
+
+        request.session['mail_user_recovery_password'] = response.json()['mail']
+        request.session['hash_to_reset_password'] = hash_to_reset_password
+        data = {
+            'lastname' : response.json()['lastname'],
+            'firstname' : response.json()['firstname'],
+            'midlename' : response.json()['midlename'],
+            'link_to_site' : redirect('TechWay:home').url,
+            'reset_password' : url_to_reset_password,
+        }
+        
+        result_send_to_mail = send_to_mail(response.json()['mail'], 'Восстановление пароля', 'mail_recovery_password.html', dict_data=data)
+        if not result_send_to_mail:
+            return render(request, 'techway\\password_recovery.html', context={'error' : 'Ошибка при отправке письма на почту!'})
+        return render(request, 'techway\\password_recovery.html', context={'result' : 'Письмо с восстановлением пароля отправленно на почту'})
+    
+def change_password_view(request: HttpRequest, hash):
+    if 'hash_to_reset_password' not in request.session or request.session['hash_to_reset_password'] != hash or 'id_user' not in request.session:
+        return redirect('TechWay:home')
+
+    if request.method == 'GET':
+        return render(request, 'techway\\change_password.html')
+    
+    else:
+        response = requests.post(f'{URL_API}update_password/', data={'mail' : request.session['mail_user_recovery_password'], 'password' : request.POST['input_password']})
+        if response.status_code == 400:
+            return render(request, 'techway\\change_password.html', context={'error' : response.json()})
+
+        request.session.pop('mail_user_recovery_password')
+        request.session.pop('hash_to_reset_password')
+
+        return render(request, 'techway\\result_change_password.html', { 'result' : response.json() })

@@ -70,19 +70,6 @@ function addOrRemoveFavorite(event, ImagePath, fillImagePath, id_product){
     });
 }
 
-function removeFavorite(event, oldImagePath, newImagePath, id_product){
-    $.ajax({
-        url : `${URLBACK}delete_favorite_item/?id_product=${id_product}`,
-        type : 'GET',
-        complete : function(){
-            $(event.target).attr('src', newImagePath);
-            $(event.target).attr('title', 'Добавить в избранное');
-            $(event.target).onclick = function(){addFavorite(event, newImagePath, oldImagePath, id_product)};
-    
-        }
-    });
-}
-
 function addFunc(){
     btn = $(this);
     console.log(btn);
@@ -138,4 +125,15 @@ function checkImagePath(path){
     let baseName = pathSplit[pathSplit.length - 1];
     let baseNameSplit = baseName.split('.');
     return ['svg', 'png', 'jpeg', 'bmp', 'jpg'].indexOf(baseNameSplit[baseNameSplit.length - 1]) != -1
+}
+
+function searchBoxCheck(url){
+    const searchBox = $('#search_items');
+    if(searchBox.val() == ''){
+        searchBox.focus();
+        return;
+    }
+    else{
+        window.location.href = url + searchBox.val();
+    }
 }

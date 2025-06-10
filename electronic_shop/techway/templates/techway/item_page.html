@@ -24,11 +24,17 @@
                         <div class="box_arrow">
                             <img src="{% static 'techway/images/down-arrow.png' %}" alt="" id="back_to_image">
                         </div>
+                        {% if product.url_photos %}
                         <div class="all_image_item">
                             {% for img in product.url_photos %}
-                                <img src="{% static 'techway/images/photo_items/' %}{{ img }}" alt="">
+                            <img src="{% static 'techway/images/photo_items/' %}{{ img }}" alt="">
                             {% endfor %}
                         </div>
+                        {% else %}
+                        <div class="all_image_item">
+                            <h3 class="text_align_center">Нет фото</h3>
+                        </div>
+                        {% endif %}
                         <div class="box_arrow">
                             <img src="{% static 'techway/images/down-arrow.png' %}" alt="" id="next_to_image">
                         </div>

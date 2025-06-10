@@ -140,6 +140,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Session
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+SESSION_COOKIE_AGE = 3600
+
 # Application mail data
 
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')

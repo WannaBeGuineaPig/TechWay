@@ -51,9 +51,10 @@
             </div>
             <div class="search_items_box">
                 <label for="search_items">
-                    <input type="search" name="" id="search_items" placeholder="Поиск по сайту">
+                    <input type="search" name="search" id="search_items" value="{{ search }}" placeholder="Поиск по сайту">
                 </label>
-                <a href="#"><img src="{% static 'techway/images/search-interface-symbol.png' %}" alt=""></a>
+                <!-- <a onclick="window.location.href=`{% url 'TechWay:home' %}?search=` + $('#search_items').val()"><img src="{% static 'techway/images/search-interface-symbol.png' %}" alt=""></a> -->
+                <a onclick="searchBoxCheck(`{% url 'TechWay:home' %}?search=`)"><img src="{% static 'techway/images/search-interface-symbol.png' %}" alt=""></a>
             </div>
             <div class="favourite">
                 <a href="{% url 'TechWay:favorite' %}" class="link_box">

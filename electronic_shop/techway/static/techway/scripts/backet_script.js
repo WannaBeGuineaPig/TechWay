@@ -32,10 +32,6 @@ $(document).ready(function(){
 
 });
 
-// $('#ordering_form').submit(function(){
-//     alert('Заказ оформлен');
-// });
-
 $('#selected_all_items_btn').click(function(){
     if($('.selected_item:checked').length == 0 || $('.card_item').length == 0 || !confirm("Вы точно хотите удалить товары из корзины?")) return;
     listIdProduct = '';

@@ -6,9 +6,15 @@
     {% if product_list %}
     {% for product in product_list %}
         <div class="card_item box_margin">
+                {% if product.url_photos %}
                 <div class="image_box">
                     <img src="{% static 'techway/images/photo_items/' %}{{ product.url_photos.0 }}" alt="фото товара">
                 </div>
+                {% else %}
+                <div class="image_box">
+                    <h3 class="text_align_center">Нет фото</h3>
+                </div>
+                {% endif %}
                 <div class="info_box">
                     <div class="box_data">
                         <div>

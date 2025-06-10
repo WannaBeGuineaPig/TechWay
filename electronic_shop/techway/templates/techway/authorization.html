@@ -33,7 +33,7 @@
                             <img src="{% static 'techway/images/show.png' %}" alt="" id="visibility_password_img" onclick="visibility_password('visibility_password_img', 'password_input')">                        
                         </div>
                         <div class="box_link_to_reg">
-                            <a class="link_to_reg" href="#">Восстановить пароль</a>
+                            <a class="link_to_reg" href="{% url 'TechWay:password_recovery' %}">Восстановить пароль</a>
                             <p>Нет аккаунта? <a class="link_to_reg" href="{% url 'TechWay:reg' %}">Создать</a></p>
                         </div>
                     </div>

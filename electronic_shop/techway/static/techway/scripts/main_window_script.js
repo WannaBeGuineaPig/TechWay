@@ -15,9 +15,14 @@ $('input[type=radio]').click(function(){
     $('#box_product_list').css('filter', 'blur(10px)')
     let type_sort = $(this).attr('value');
     let category = $('.categories').text();
+    let search = $('#search_items').val();
+    $('#sort_link').text($(`[for=${type_sort}]`).text());
+    $('#pages').text(`1/${$('#pages').text().split('/')[1]}`);
     category = category != '' ? '&subcategory=' + category.split(' > ')[2] : '';
+    search = search != '' ? '&search=' + search : '';
+    history.replaceState('', '',url=`${URLBACK}home/?sort=${type_sort}${category}${search}`);
     $.ajax({
-        url: `${URLBACK}update_list_product/?sort=${type_sort}${category}`,
+        url: `${URLBACK}update_list_product/?sort=${type_sort}${category}${search}`,
         type: 'GET',
         success : function (json) {
             if(json.result){
@@ -27,4 +32,27 @@ $('input[type=radio]').click(function(){
             }
         } 
     });
+});
+
+$('.btn_pages').click(function(){
+    let number_page = parseInt($('#pages').text().split('/')[0]);
+    let count_page = parseInt($('#pages').text().split('/')[1]);
+    number_page = $(this).attr('id') == 'minus_page' ? number_page - 1 : number_page + 1;
+    if (number_page == 0 || number_page > count_page){
+        return;
+    }
+    let type_sort = $('input[type=radio]:checked').attr('value');
+    let category = $('.categories').text();
+    let search = $('#search_items').val();
+    $('#sort_link').text($(`[for=${type_sort}]`).text());
+    $('#pages').text(`${number_page}/${count_page}`);
+    category = category != '' ? '&subcategory=' + category.split(' > ')[2] : '';
+    search = search != '' ? '&search=' + search : '';
+    type_sort = type_sort != '' ? '&sort=' + type_sort : '';
+    window.location.href = `${URLBACK}home/?number_page=${number_page}${type_sort}${category}${search}`;
+});
+
+$(document).ready(function(){
+    let type_sort = $('input[type=radio]:checked').attr('value');
+    $('#sort_link').text($(`[for=${type_sort}]`).text());
 });
