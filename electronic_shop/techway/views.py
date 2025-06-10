@@ -508,6 +508,22 @@ def add_change_data_view(request: HttpRequest) -> JsonResponse:
 
     else:
         if request.session['table'] == 'items':
+            path_images = []
+            if 'item_images' in request.FILES:
+                path_to_dir = f'{os.path.dirname(__file__)}{static("techway/images/photo_items/")}'
+                dir_name = request.POST["name_item"]
+                # full_path_dir = path_to_dir + dir_name
+                while os.path.isdir(path_to_dir + dir_name):
+                    dir_name += '(1)'
+    
+                os.mkdir(path_to_dir + dir_name)
+                list_images = request.FILES.getlist('item_images')
+                for index in range(len(list_images)):
+                    path_image = f'{dir_name}/{index+1}.{list_images[index].content_type.split("/")[1].split("+")[0]}'
+                    with open(f'{path_to_dir}{path_image}', 'wb') as file:
+                        file.write(list_images[index].read())
+                    path_images.append(str(path_image))
+
             response = requests.post(f'{URL_API}get_set_data_product/', data={
                 'id_product' : request.POST['id_item'],
                 'id_subcategory' : request.POST['select_subcategory'],
@@ -530,6 +546,7 @@ def add_change_data_view(request: HttpRequest) -> JsonResponse:
                 'width' : request.POST['width'],
                 'height' : request.POST['height'],
                 'weight' : request.POST['weight'],
+                'path_images' : path_images,
             })
 
         else:

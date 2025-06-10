@@ -1,4 +1,4 @@
-<form class="box_margin form_add_change_data" action="" method="post">
+<form class="box_margin form_add_change_data" action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="box_data">
         <label for="id_item">Номер товара: </label>
@@ -120,8 +120,8 @@
         <div class="box_data">
             <label for="amount_item">Фотографии:</label>
             <div class="box_images">
-                <textarea name="" id="all_images"></textarea>
-                <input id="select_image" type="file" accept="image/*" ="Добавить фото">
+                <textarea name="" id="all_images" readonly></textarea>
+                <input id="select_image" name="item_images" type="file" accept=".svg, .png, .jpeg, .jpg" title="Добавить фотографии" multiple>
             </div>
         </div>
     {% endif %}

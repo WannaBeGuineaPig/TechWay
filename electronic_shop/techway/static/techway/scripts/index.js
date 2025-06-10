@@ -120,13 +120,6 @@ function maxBirthDate(){
     return `${dateNow.getFullYear()}-${dateNow.getMonth() > 9 ? dateNow.getMonth() : `0${dateNow.getMonth()}`}-${dateNow.getDate() > 9 ? dateNow.getDate() : `0${dateNow.getDate()}`}`;
 }
 
-function checkImagePath(path){
-    let pathSplit = path.split('\\');
-    let baseName = pathSplit[pathSplit.length - 1];
-    let baseNameSplit = baseName.split('.');
-    return ['svg', 'png', 'jpeg', 'bmp', 'jpg'].indexOf(baseNameSplit[baseNameSplit.length - 1]) != -1
-}
-
 function searchBoxCheck(url){
     const searchBox = $('#search_items');
     if(searchBox.val() == ''){
@@ -136,4 +129,11 @@ function searchBoxCheck(url){
     else{
         window.location.href = url + searchBox.val();
     }
+}
+
+function checkImagePath(path){
+    let pathSplit = path.split('\\');
+    let baseName = pathSplit[pathSplit.length - 1];
+    let baseNameSplit = baseName.split('.');
+    return ['svg', 'png', 'jpeg', 'jpg'].indexOf(baseNameSplit[baseNameSplit.length - 1]) != -1
 }

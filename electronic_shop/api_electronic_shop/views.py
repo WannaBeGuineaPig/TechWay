@@ -520,7 +520,13 @@ class GetSetDataProduct(APIView):
                 rating_sum = 0,
                 status = request.data['status']
             )
+
             product.save()
+            if 'path_images' in request.data:
+                for i in request.data.getlist('path_images'):
+                    product_photo = ProductPhoto(id_product=product, url_photo=i)
+                    product_photo.save()
+
             return Response(status=status.HTTP_204_NO_CONTENT)
         
         product = Product.objects.get(idproduct=id_product)
@@ -622,7 +628,8 @@ class FavoriteAction(APIView):
         result_list = []
         for item in favorite_list:
             product = ProductSerializer(item.id_product).data
-            product['url_image'] = ProductPhoto.objects.filter(id_product=item.id_product).first().url_photo
+            url_image = ProductPhoto.objects.filter(id_product=item.id_product).first()
+            product['url_image'] = url_image.url_photo if url_image else ''
             order_product = Orderproduct.objects.filter(id_product=item.id_product)
             order = Order.objects.filter(id_user=user, status='Не оформлен').first()
             order_product = [i for i in order_product if i.id_order == order]
