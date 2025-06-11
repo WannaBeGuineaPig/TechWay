@@ -72,7 +72,10 @@ function addOrRemoveFavorite(event, ImagePath, fillImagePath, id_product){
 
 function addFunc(){
     btn = $(this);
-    console.log(btn);
+    if (btn.hasClass('disabled_btn')){
+        alert('Необходимо авторизироваться!')
+        return;
+    }
     btn.unbind("click");
     idItem = $(this).attr('id');
     textBtn = $(this).text();

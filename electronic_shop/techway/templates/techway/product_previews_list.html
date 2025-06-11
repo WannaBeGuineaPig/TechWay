@@ -35,14 +35,14 @@
                     <div class="buy_favorite">
                         <div class="box_center">
                             {% if product.favorites %}
-                                <img  class="image_heart" src="{% static 'techway/images/fill_heart.png' %}" alt="Избранное" title="В избранном" {% if 'id_user' in request.session %}onclick="addOrRemoveFavorite(event, '{% static 'techway/images/heart.png' %}', '{% static 'techway/images/fill_heart.png' %}', '{{ product.idproduct }}')"{% endif %}>
+                                <img  class="image_heart" src="{% static 'techway/images/fill_heart.png' %}" alt="Избранное" title="В избранном" {% if 'id_user' in request.session %}onclick="addOrRemoveFavorite(event, '{% static 'techway/images/heart.png' %}', '{% static 'techway/images/fill_heart.png' %}', '{{ product.idproduct }}')"{% else %} onclick="alert('Необходимо авторизироваться!')" {% endif %}>
                             {% else %}
-                                <img class="image_heart" src="{% static 'techway/images/heart.png' %}" alt="Избранное" title="Добавить в избранное" {% if 'id_user' in request.session %}onclick="addOrRemoveFavorite(event, '{% static 'techway/images/heart.png' %}', '{% static 'techway/images/fill_heart.png' %}', '{{ product.idproduct }}')"{% endif %}>
+                                <img class="image_heart" src="{% static 'techway/images/heart.png' %}" alt="Избранное" title="Добавить в избранное" {% if 'id_user' in request.session %}onclick="addOrRemoveFavorite(event, '{% static 'techway/images/heart.png' %}', '{% static 'techway/images/fill_heart.png' %}', '{{ product.idproduct }}')"{% else %} onclick="alert('Необходимо авторизироваться!')" {% endif %}>
                             {% endif %}
                             {% if product.basket %}
                                 <a href="{% url 'TechWay:backet' %}" class="link_buy" title="В корзине"><span>В корзине</span></a>
                             {% else %}
-                                <button class="link_buy add_btn" title="добавить в корзину" id="{{ product.idproduct }}" {% if 'id_user' not in request.session%} disabled {% endif%}><span>Купить</span></button>
+                                <button class="link_buy add_btn {% if 'id_user' not in request.session%} disabled_btn{% endif%}" title="добавить в корзину" id="{{ product.idproduct }}"><span>Купить</span></button>
                             {% endif %}
                         </div>
                     </div>
