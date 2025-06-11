@@ -58,7 +58,7 @@
                 <div class="box_input_data">
                     <div class="box_input_data_final">
                         <label for="phone_number_input" id="label_phone_number" class="label_for_input" style="display: none;">Введите телефон</label>
-                        <input class="input_data" type="text" name="input_phone_number" id="phone_number_input" oninput="checkPlaceHolder('label_phone_number', 'phone_number_input')" pattern="^\d{11,}$" required maxlength="30" value="{{ phone_number }}">
+                        <input class="input_data" type="text" name="input_phone_number" id="phone_number_input" oninput="checkPlaceHolder('label_phone_number', 'phone_number_input')" pattern="^[+][7][0-9]{10}$" required maxlength="12" value="{{ phone_number }}">
                     </div>
                 </div>
                 <div class="box_input_data">

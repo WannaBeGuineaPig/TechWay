@@ -255,9 +255,9 @@ def personal_account_view(request: HttpRequest) -> HttpResponse:
             json_data = {
                 'iduser': request.session['id_user'],
                 'mail': request.POST['input_mail'],
-                'lastname': request.POST['input_last_name'],
-                'firstname': request.POST['input_first_name'],
-                'midlename': request.POST['input_midle_name'],
+                'lastname': request.POST['input_last_name'].capitalize(),
+                'firstname': request.POST['input_first_name'].capitalize(),
+                'midlename': request.POST['input_midle_name'].capitalize(),
                 'birthdate': request.POST['input_birthdate'],
                 'phone_number': request.POST['input_phone_number'],
                 'password': request.POST['input_password'],
@@ -309,9 +309,9 @@ def registration_view(request: HttpRequest) -> HttpResponse:
     
     else:
         dict_data = {
-            'lastname' : request.POST['input_last_name'],
-            'firstname' : request.POST['input_first_name'],
-            'birthdate' : request.POST['input_birthdate'],
+            'lastname' : request.POST['input_last_name'].capitalize(),
+            'firstname' : request.POST['input_first_name'].capitalize(),
+            'birthdate' : request.POST['input_birthdate'].capitalize(),
             'mail' : request.POST['input_mail'],
             'password' : request.POST['input_password']
         }
@@ -512,7 +512,6 @@ def add_change_data_view(request: HttpRequest) -> JsonResponse:
             if 'item_images' in request.FILES:
                 path_to_dir = f'{os.path.dirname(__file__)}{static("techway/images/photo_items/")}'
                 dir_name = request.POST["name_item"]
-                # full_path_dir = path_to_dir + dir_name
                 while os.path.isdir(path_to_dir + dir_name):
                     dir_name += '(1)'
     
