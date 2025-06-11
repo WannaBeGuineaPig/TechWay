@@ -635,7 +635,7 @@ def delete_favorite_item(request: HttpRequest):
         return JsonResponse({})
     
 def password_recovery_view(request: HttpRequest):
-    if 'id_user' not in request.session:
+    if 'id_user' in request.session:
         return redirect('TechWay:home')
     
     if request.method == 'GET':
@@ -655,7 +655,7 @@ def password_recovery_view(request: HttpRequest):
             'lastname' : response.json()['lastname'],
             'firstname' : response.json()['firstname'],
             'midlename' : response.json()['midlename'],
-            'link_to_site' : redirect('TechWay:home').url,
+            'link_to_site' : f'{URL_BACK}home',
             'reset_password' : url_to_reset_password,
         }
         
@@ -665,7 +665,7 @@ def password_recovery_view(request: HttpRequest):
         return render(request, 'techway\\password_recovery.html', context={'result' : 'Письмо с восстановлением пароля отправленно на почту'})
     
 def change_password_view(request: HttpRequest, hash):
-    if 'hash_to_reset_password' not in request.session or request.session['hash_to_reset_password'] != hash or 'id_user' not in request.session:
+    if 'hash_to_reset_password' not in request.session or request.session['hash_to_reset_password'] != hash or 'id_user' in request.session:
         return redirect('TechWay:home')
 
     if request.method == 'GET':

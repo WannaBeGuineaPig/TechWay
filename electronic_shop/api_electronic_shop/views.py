@@ -288,10 +288,12 @@ class GetProduct(APIView):
         section = product.id_subcategory.id_category.id_section.name
         property = create_property(product.id_property)
 
+        manufacturer = ManufacturerSerializer(product.id_manufacturer).data
+        manufacturer['feedback'] = round(manufacturer['rating_sum'] / manufacturer['rating_count'], 2) if manufacturer['rating_count'] > 0 else 0
         product = ProductSerializer(product).data
         list_photo_item = ProductPhoto.objects.filter(id_product=product['idproduct'])
         list_serializer = ProductPhotoSerializer(list_photo_item, many=True).data
-        product = {**product, 'subcategory' : subcategory, 'category' : category, 'section' : section, 'property' : property, 'url_photos' : [i['url_photo'] for i in list_serializer]} 
+        product = {**product, 'manufacturer' : manufacturer, 'subcategory' : subcategory, 'category' : category, 'section' : section, 'property' : property, 'url_photos' : [i['url_photo'] for i in list_serializer]} 
 
         if 'id_user' in request.GET:
             product['favorites'] = len(Favorite.objects.filter(id_user=request.GET['id_user'], id_product=product['idproduct'])) > 0

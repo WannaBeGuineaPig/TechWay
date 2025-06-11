@@ -90,6 +90,26 @@
                         {% endfor %}
                     </div>
                 </div>
+
+                <h1 class="box_margin title_text">Производитель</h1>
+                <div class="box_specifications box_margin">
+                    <div class="box_center_specifications">
+                        <div class="box_specification">
+                            <h3>Название:</h3>
+                            <p>{{ product.manufacturer.name }}</p>
+                        </div>
+                        <div class="box_specification">
+                            <h3>Страна:</h3>
+                            <p>{{ product.manufacturer.country }}</p>
+                        </div>
+                        <div class="box_specification">
+                            <h3>Оценка:</h3>
+                            <p>{{ product.manufacturer.feedback }}</p>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
         </div>
         <script src="{% static 'techway/scripts/index.js' %}" type="text/javascript"></script>
