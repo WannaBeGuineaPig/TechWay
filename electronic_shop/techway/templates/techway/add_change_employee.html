@@ -55,7 +55,7 @@
     
     <div class="box_data">
         <label for="phone_number_employee">Номер телефона: </label>
-        <input name="phone_number_employee" type="text" pattern="^\d{11,}$" required maxlength="30" value="{{ phone_number }}">
+        <input name="phone_number_employee" type="text" pattern="^[+][7][0-9]{10}$" required maxlength="12" value="{{ phone_number }}">
     </div>
     
     <div class="box_btn">

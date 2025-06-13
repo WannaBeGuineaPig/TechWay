@@ -22,7 +22,7 @@ urlpatterns = [
     path('create_report_admin_panel/', views.create_report_admin_panel),
     path('delete_admin_panel/', views.delete_admin_panel),
     path('add_change_data/', views.add_change_data),
-    path('add_change_data_view/', views.add_change_data_view, name='add_change'),
+    path('add_change_data_page/', views.add_change_data_view, name='add_change'),
     path('history_order/', views.history_order_view, name='history_order'),
     path('create_check_history_order/', views.create_check_history_order),
     path('add_favorite_item/', views.add_favorite_item),

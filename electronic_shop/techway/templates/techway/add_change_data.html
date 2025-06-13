@@ -15,7 +15,7 @@
         {% block body %}
         <div class="container">
             {% if table == 'items' %}
-            <h1 class="box_margin text_align_center">{% if idproduct == -1 %}Добавить товар{% else %}Изменить товар{% endif %}</h1>
+            <h1 class="box_margin text_align_center">{% if idproduct == -1 %}Добавить электронную технику{% else %}Изменить товар{% endif %}</h1>
             <p class="error_text text_align_center">{% for error in errors %}{{ error }}<br>{% endfor %}</p>
             {% include 'TechWay/add_change_item.html' %}
             {% else %}

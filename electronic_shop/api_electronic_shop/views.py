@@ -81,6 +81,7 @@ class ProductList(APIView):
             product_list = product_list.filter(Q(name__icontains=request.GET['search'])|Q(describe__icontains=request.GET['search']))
 
         count_page = len(product_list) // 10 + (0 if len(product_list) % 10 == 0 else 1)
+        count_page = count_page if count_page > 0 else 1
         all_product_items = len(product_list)
 
         if 'number_page' in request.GET:
@@ -484,8 +485,15 @@ class GetSetDataProduct(APIView):
                         })
     
     def post(self, request: Request):        
-        def check_to_digit(content): 
-            return content if content.isdigit() else None
+        def check_to_number(content): 
+            if content is None: 
+                return None
+            try:
+                check = float(content)
+                return check
+            except ValueError:
+                return None
+            # return content if content.isdigit() else None
         id_product = int(request.data['id_product'])
 
         type_display = TypeDisplay.objects.filter(idtype_display=int(request.data['id_type_display']))
@@ -495,15 +503,15 @@ class GetSetDataProduct(APIView):
             'id_type_display' : type_display.first() if len(type_display) > 0 else None,
             'id_video_card' : video_card.first() if len(video_card) > 0 else None,
             'id_processor' : processor.first() if len(processor) > 0 else None,
-            'display_brightness_cd_m_2_field' : check_to_digit(request.data['display_brightness']),
-            'maximum_screen_frequency_hz_field' : check_to_digit(request.data['maximum_screen']),
-            'screen_diagonal_inch_field' : check_to_digit(request.data['screen_diagonal']),
-            'ram_amount_gb_field' : check_to_digit(request.data['ram_memory']),
-            'internal_memory_amount_gb_field' : check_to_digit(request.data['internal_memory']),
-            'thickness_mm_field' : check_to_digit(request.data['thickness']),
-            'width_mm_field' : check_to_digit(request.data['width']),
-            'height_mm_field' : check_to_digit(request.data['height']),
-            'weight_kg_field' : check_to_digit(request.data['weight']),
+            'display_brightness_cd_m_2_field' : check_to_number(request.data['display_brightness']),
+            'maximum_screen_frequency_hz_field' : check_to_number(request.data['maximum_screen']),
+            'screen_diagonal_inch_field' : check_to_number(request.data['screen_diagonal']),
+            'ram_amount_gb_field' : check_to_number(request.data['ram_memory']),
+            'internal_memory_amount_gb_field' : check_to_number(request.data['internal_memory']),
+            'thickness_mm_field' : check_to_number(request.data['thickness']),
+            'width_mm_field' : check_to_number(request.data['width']),
+            'height_mm_field' : check_to_number(request.data['height']),
+            'weight_kg_field' : check_to_number(request.data['weight']),
         }
 
         if id_product == -1:

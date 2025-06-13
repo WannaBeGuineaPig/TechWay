@@ -73,47 +73,47 @@
     </div>
     <div class="box_data">
         <label for="display_brightness">Яркость экрана(кд/м<sup>2</sup>): </label>
-        <input name="display_brightness" type="number" value="{{ display_brightness_cd_m_2_field }}">
+        <input name="display_brightness" step="0.001" type="number" value="{{ display_brightness_cd_m_2_field }}">
     </div>
     <div class="box_data">
         <label for="maximum_screen">Максимальная частота экрана(Гц): </label>
-        <input name="maximum_screen" type="number" value="{{ maximum_screen_frequency_hz_field }}">
+        <input name="maximum_screen" step="0.001" type="number" value="{{ maximum_screen_frequency_hz_field }}">
     </div>
     <div class="box_data">
         <label for="screen_diagonal">Диагональ экрана(дюйм): </label>
-        <input name="screen_diagonal" type="number" value="{{ screen_diagonal_inch_field }}">
+        <input name="screen_diagonal" step="0.001" type="number" value="{{ screen_diagonal_inch_field }}">
     </div>
     <div class="box_data">
         <label for="ram_amount">Количество оперативной памяти(гб): </label>
-        <input name="ram_amount" type="number" value="{{ ram_amount_gb_field }}">
+        <input name="ram_amount" step="0.001" type="number" value="{{ ram_amount_gb_field }}">
     </div>
     <div class="box_data">
         <label for="internal_memory">Количество встроенной памяти(гб): </label>
-        <input name="internal_memory" type="number" value="{{ internal_memory_amount_gb_field }}">
+        <input name="internal_memory" step="0.001" type="number" value="{{ internal_memory_amount_gb_field }}">
     </div>
     <div class="box_data">
         <label for="thickness">Толщина(мм): </label>
-        <input name="thickness" type="number" value="{{ thickness_mm_field }}">
+        <input name="thickness" step="0.001" type="number" value="{{ thickness_mm_field }}">
     </div>
     <div class="box_data">
         <label for="width">Ширина(мм): </label>
-        <input name="width" type="number" value="{{ width_mm_field }}">
+        <input name="width" step="0.001" type="number" value="{{ width_mm_field }}">
     </div>
     <div class="box_data">
         <label for="height">Высота(мм): </label>
-        <input name="height" type="number" value="{{ height_mm_field }}">
+        <input name="height" step="0.001" type="number" value="{{ height_mm_field }}">
     </div>
     <div class="box_data">
         <label for="weight">Вес(кг): </label>
-        <input name="weight" type="number" value="{{ weight_kg_field }}">
+        <input name="weight" step="0.001" type="number" value="{{ weight_kg_field }}">
     </div>
     <div class="box_data">
         <label for="price_item">Цена: </label>
-        <input name="price_item" type="number" value="{{ price }}" required>
+        <input name="price_item" step="0.001" type="number" value="{{ price }}" required>
     </div>
     <div class="box_data">
         <label for="amount_item">Количество: </label>
-        <input name="amount_item" type="number" value="{{ amount }}" required>
+        <input name="amount_item" step="0.001" type="number" value="{{ amount }}" required>
     </div>
 
     {% if idproduct == -1 %}
